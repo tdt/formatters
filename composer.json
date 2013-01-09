@@ -1,0 +1,20 @@
+{
+    "name": "tdt/formatters",
+    "description": "Formats PHP arrays, PHP objects and RDF triples in a lot of formats.",
+    "keywords": ["format rdf triple arrays objects"],
+    "homepage": "http://thedatatank.com",
+    "type": "library",
+    "license": "AGPLv3",
+    "suggest": {
+        "tdt/core": "RESTful API to configure several inputs to format using these formatters"
+    },
+    "require": {
+	"tdt/framework":"dev-master"
+    },
+    "minimum-stability" : "dev",
+    "autoload": {
+        "psr-0": {
+            "tdt\\formatters\\": "src/"
+        }
+    }
+}
