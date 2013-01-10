@@ -1,18 +1,15 @@
 <?php
 /**
  * This file contains the Json printer.
- * @package The-Datatank/formatters
- * @copyright (C) 2011 by iRail vzw/asbl
+ * @copyright (C) 2011,2013 by OKFN Belgium vzw/asbl
  * @license AGPLv3
  * @author Jan Vansteenlandt <jan@iRail.be>
  * @author Pieter Colpaert   <pieter@iRail.be>
  */
 
-/**
- * This class inherits from the abstract Formatter. It will return our resultobject into a
- * json datastructure.
- */
-class JsonFormatter extends AFormatter{
+namespace tdt\formatters\strategies;
+
+class JSON extends ..\AStrategy{
      
      public function __construct($rootname,$objectToPrint){
 	  parent::__construct($rootname,$objectToPrint);

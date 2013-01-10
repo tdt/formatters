@@ -1,22 +1,15 @@
 <?php
 /**
  * This file contains the CSV printer.
- * @package The-Datatank/formatters
- * @copyright (C) 2011 by iRail vzw/asbl
+ * @copyright (C) 2011,2013 by OKFN Belgium vzw/asbl
  * @license AGPLv3
  * @author Pieter Colpaert   <pieter@iRail.be>
  * @author Jan Vansteenlandt <jan@iRail.be>
  */
 
-/**
- * This class inherits from the abstract Formatter. It will return our resultobject into a
- * csv datastructure.
- */
-class CsvFormatter extends AFormatter{
-     
-     public function __construct($rootname,$objectToPrint){
-	  parent::__construct($rootname,$objectToPrint);
-     }
+namespace tdt\formatters\strategies;
+
+class CSV extends ..\AStrategy{
 
      public function printHeader(){
 	  header("Access-Control-Allow-Origin: *");

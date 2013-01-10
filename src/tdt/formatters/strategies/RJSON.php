@@ -5,13 +5,14 @@
  * Includes RDF Api for PHP <http://www4.wiwiss.fu-berlin.de/bizer/rdfapi/>
  * Licensed under LGPL <http://www.gnu.org/licenses/lgpl.html>
  *
- * @package The-Datatank/formatters
- * @copyright (C) 2011 by iRail vzw/asbl
+ * @copyright (C) 2011,2013 by OKFN Belgium vzw/asbl
  * @license AGPLv3
  * @author Miel Vander Sande
  */
 
-class RjsonFormatter extends AFormatter {
+namespace tdt\formatters\strategies;
+
+class RJSON extends ..\AStrategy {
 
     public function __construct($rootname, $objectToPrint) {
         parent::__construct($rootname, $objectToPrint);
@@ -51,7 +52,4 @@ class RjsonFormatter extends AFormatter {
         return "Prints in the Talis RDF JSON notation with semantic annotations";
     }
 
-
 }
-
-?>

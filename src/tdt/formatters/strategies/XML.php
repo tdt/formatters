@@ -7,8 +7,8 @@
  * @author Pieter Colpaert   <pieter@iRail.be>
  */
 
-namespace \tdt\formatters\strategies;
-class XmlFormatter extends AFormatter{
+namespace tdt\formatters\strategies;
+class XML extends ..\AStrategy{
     //make a stack of array information, always work on the last one
     //for nested array support
     private $stack = array();
@@ -187,5 +187,4 @@ class XmlFormatter extends AFormatter{
     }
 
 
-};
-?>
+}

@@ -1,23 +1,25 @@
 <?php
 /**
- * This file contains the RDF/Turtle formatter.
+ * This file contains the RDF as HTML table formatter.
  * 
  * Includes RDF Api for PHP <http://www4.wiwiss.fu-berlin.de/bizer/rdfapi/>
  * Licensed under LGPL <http://www.gnu.org/licenses/lgpl.html>
  *
- * @package The-Datatank/formatters
- * @copyright (C) 2011 by iRail vzw/asbl
+ * @copyright (C) 2011,2013 by OKFN Belgium vzw/asbl
  * @license AGPLv3
  * @author Miel Vander Sande
  */
-class TtlFormatter extends AFormatter {
+
+namespace tdt\formatters\strategies;
+
+class RHTML extends ..\AStrategy {
 
     public function __construct($rootname, $objectToPrint) {
         parent::__construct($rootname, $objectToPrint);
     }
 
     public function printBody() {
-        //Unwrap the object
+        //Unwrap object
         foreach ($this->objectToPrint as $class => $prop){
             if (is_a($prop,"MemModel")){
                 $this->objectToPrint = $prop;
@@ -31,25 +33,17 @@ class TtlFormatter extends AFormatter {
             $this->objectToPrint = $outputter->buildRdfOutput($this->objectToPrint);
         }
         
-        // Import Package Syntax
-        include_once(RDFAPI_INCLUDE_DIR . PACKAGE_SYNTAX_N3);
-
-        $ser = new N3Serializer();
-
-        $rdf = $ser->serialize($this->objectToPrint);
-
-        echo $rdf;
+        //We are certain that the objectToPrint is now a MemModel: write as HTML table
+        echo $this->objectToPrint->writeAsHTMLTable();
     }
 
     public function printHeader() {
         header("Access-Control-Allow-Origin: *");
-        header("Content-Type: text/turtle; charset=UTF-8");
+        header("Content-Type: text/html; charset=UTF-8");
     }
 
     public static function getDocumentation(){
-        return "Prints the Turtle notation with semantic annotations";
+        return "Prints the RDF with semantic annotations as HTML table. This is for development purposes.";
     }
 
 }
-
-?>

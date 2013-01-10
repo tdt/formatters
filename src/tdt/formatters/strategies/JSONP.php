@@ -8,13 +8,9 @@
  * @author Pieter Colpaert   <pieter@iRail.be>
  */
 
-include_once("custom/formatters/JsonFormatter.class.php");
+namespace tdt\formatters\strategies;
 
-/**
- * This class inherits from the Json printer. It just needs the json value and it will add
- * some data to make the json into a jsonp message.
- */
-class JsonpFormatter extends JsonFormatter{
+class JSONP extends ..\AStrategy{
 
      private $callback;
 
@@ -22,7 +18,7 @@ class JsonpFormatter extends JsonFormatter{
 	  if($callback != ""){
 	       $this->callback = $callback;
 	  }else{
-	       throw new TDTException(452, array("With Jsonp you should add a callback: &callback=yourfunctionname"));
+	       throw new \tdt\framework\TDTException(452, array("With Jsonp you should add a callback: &callback=yourfunctionname"));
 	  }
 	  parent::__construct($rootname,$objectToPrint);
      }

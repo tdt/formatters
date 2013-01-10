@@ -3,18 +3,16 @@
 /**
  * The Html formatter formats everything for development purpose
  *
- * @package The-Datatank/formatters
- * @copyright (C) 2011 by iRail vzw/asbl
+ * @copyright (C) 2011,2013 by OKFN Belgium vzw/asbl
  * @license AGPLv3
  * @author Jan Vansteenlandt <jan@iRail.be>
  * @author Pieter Colpaert   <pieter@iRail.be>
  * @author Miel Vander Sande 
  */
 
-/**
- * This class inherits from the abstract Formatter. It will generate a html table
- */
-class HtmlFormatter extends AFormatter {
+namespace tdt\formatters\strategies;
+
+class HTML extends ..\AStrategy {
 
 	private $thead;
 	private $tbody;

@@ -1,17 +1,15 @@
 <?php
 /**
  * This file contains the php formatter.
- * @package The-Datatank/formatters
- * @copyright (C) 2011 by iRail vzw/asbl
+ * @copyright (C) 2011,2013 by OKFN Belgium vzw/asbl
  * @license AGPLv3
  * @author Jan Vansteenlandt <jan@iRail.be>
  * @author Pieter Colpaert   <pieter@iRail.be>
  */
 
-/**
- * This class inherits from the abstract Formatter. It will return our object in a php datastrucutre.
- */
-class PhpFormatter extends AFormatter{
+namespace tdt\formatters\strategies;
+
+class PHP extends ..\AStrategy{
      
      public function __construct($rootname,$objectToPrint){
 	  parent::__construct($rootname,$objectToPrint);
@@ -36,4 +34,3 @@ class PhpFormatter extends AFormatter{
      }
 
 };
-?>

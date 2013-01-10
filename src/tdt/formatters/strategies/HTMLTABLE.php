@@ -2,20 +2,16 @@
 /**
  * This file contains the HTML Table printer.
  * 
- * I wrote this file based upon the csv formatter...
+ * I wrote this file based upon the csv formatter
  * 
- * @package The-Datatank/formatters
- * @copyright (C) 2011 by iRail vzw/asbl
+ * @copyright (C) 2011,2013 by OKFN vzw/asbl
  * @license AGPLv3
  * @author Jeroen Penninck
  */
 
-/**
- * This class inherits from the abstract Formatter. It will return our resultobject into a
- * html table datastructure.
- */
+namespace tdt\formatters\strategies;
 
-class HtmltableFormatter extends AFormatter {
+class HTMLTABLE extends  ..\AStrategy{
     
     private $SHOWNULLVALUES=true;/* show null values as "unknown" or not? If not, you can not see the difference between "null" and "" */
 
@@ -58,7 +54,7 @@ class HtmltableFormatter extends AFormatter {
         $this->objectToPrint = $this->objectToPrint->$key;
 
         if (!is_array($this->objectToPrint)) {
-            throw new TDTException(500,array("HTMLFormatter - You can only request HTML-table on an array" , array("CSV", "json", "rdf", "xml", "n3","ttl")));
+            throw new \tdt\framework\TDTException(500,array("HTMLFormatter - You can only request HTML-table on an array"));
         }
 	$firstrow = reset($this->objectToPrint);
         if($firstrow===FALSE) {

@@ -3,19 +3,19 @@
  * This class is an abstract formatter class. It will take an object and format it to a certain format.
  * This format and the logic to format it will be implemented in a class that inherits from this class.
  *
- * @package The-Datatank/formatters
- * @copyright (C) 2011 by iRail vzw/asbl
+ * @copyright (C) 2011,2013 by OKFN Belgium vzw/asbl
  * @license AGPLv3
  * @author Pieter Colpaert   <pieter@iRail.be>
  * @author Jan Vansteenlandt <jan@iRail.be>
  */
+namespace tdt\formatters;
 
-abstract class AFormatter {
+abstract class AStrategy {
     protected $rootname;
     protected $objectToPrint;
     protected $format;
 
-    // version of The DataTank API
+    // version of your API
     protected $version;
 
     /**
@@ -23,10 +23,8 @@ abstract class AFormatter {
      * @param string $rootname Name of the rootobject, if used in the print format (i.e. xml)
      * @param Mixed  $objectToPrint Object that needs printing.
      */
-    public function __construct($rootname, &$objectToPrint) {
-        include(Config::get("general","subdir")."cores/core/version.php");
+    public function __construct($rootname, &$objectToPrint,$version = "1.0") {
         $this->version = $version;
-
         $this->rootname = $rootname;
         $this->objectToPrint = &$objectToPrint;
     }
@@ -55,4 +53,3 @@ abstract class AFormatter {
     abstract public function printBody();
     
 }
-?>
