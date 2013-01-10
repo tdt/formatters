@@ -76,7 +76,8 @@ class Formatter{
      */
     private function execute($thing){
         //TODO
-
+        $format = $this->format;
+        $strategy = new strategies\$format("rootname",$thing);
     }
     
 
