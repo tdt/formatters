@@ -68,8 +68,8 @@ class Formatter{
         
     }
 
-    private function formatExists($format){           
-        return class_exists("\tdt\formatters\strategies\$format");
+    private function formatExists($format){
+        return class_exists("\\tdt\\formatters\\strategies\\$format");
     }
 
     /*
