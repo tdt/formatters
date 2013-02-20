@@ -7,7 +7,8 @@
  * @author Jan Vansteenlandt <jan@iRail.be>
  * @author Pieter Colpaert   <pieter@iRail.be>
  */
-namespace tdt\exceptions\TDTException;
+namespace tdt\formatters;
+use tdt\exceptions\TDTException;
 class Formatter{
 
     private $format;
