@@ -33,12 +33,12 @@ class Formatter{
         //first, let's be sure about the case of the format
         $urlformat = strtoupper($urlformat);
        
-        if(strtoupper($urlformat) == "about" || $urlformat == "" ){ //urlformat can be empty on SPECTQL query
+        if(strtoupper($urlformat) == "ABOUT" || $urlformat == "" ){ //urlformat can be empty on SPECTQL query
             
-            $cn = new \tdt\negotiatiors\ContentNegotiator();
-            $format = $cn->pop();
+            $cn = new \tdt\negotiators\ContentNegotiator();
+            $format = strtoupper($cn->pop());
             while(!$this->formatExists($format) && $cn->hasNext()){
-                $format = $cn->pop();
+                $format = strtoupper($cn->pop());
                 if($format == "*"){
                     $format == "XML";
                 }
@@ -58,14 +58,13 @@ class Formatter{
             } else {
                 $pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
             }
-            $contentlocation = str_replace(".about", "." . $format, $pageURL);
+            $contentlocation = str_ireplace(".about", "." . $format, $pageURL);
             header("Content-Location:" . $contentlocation);
         }else if($this->formatExists($urlformat)){
             $this->format = $urlformat;
         }else{            
             throw new TDTException(451,array($urlformat));
         }
-        
     }
 
     private function formatExists($format){
@@ -76,7 +75,7 @@ class Formatter{
      * This function has to create a strategy and print everything using this strategy.
      */
     public function execute($rootname, $thing){
-        $format = "strategies\\" . $this->format;
+        $format = "\\tdt\\formatters\\strategies\\" . $this->format;
         $strategy = new $format($rootname,$thing);
         $strategy->execute();
     }

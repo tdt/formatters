@@ -8,6 +8,7 @@
  */
 
 namespace tdt\formatters\strategies;
+use tdt\exceptions\TDTException;
 
 class CSV extends \tdt\formatters\AStrategy{
 
