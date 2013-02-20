@@ -7,7 +7,7 @@
  * @author Jan Vansteenlandt <jan@iRail.be>
  * @author Pieter Colpaert   <pieter@iRail.be>
  */
-namespace tdt\formatters;
+namespace tdt\exceptions\TDTException;
 class Formatter{
 
     private $format;
@@ -34,7 +34,7 @@ class Formatter{
        
         if(strtoupper($urlformat) == "about" || $urlformat == "" ){ //urlformat can be empty on SPECTQL query
             
-            $cn = new \tdt\framework\ContentNegotiator();
+            $cn = new \tdt\negotiatiors\ContentNegotiator();
             $format = $cn->pop();
             while(!$this->formatExists($format) && $cn->hasNext()){
                 $format = $cn->pop();
@@ -43,7 +43,7 @@ class Formatter{
                 }
             }
             if(!$this->formatExists($format)){                
-                throw new \tdt\framework\TDTException(451,array($format)); // could not find a suitible format
+                throw new TDTException(451,array($format)); // could not find a suitible format
             }
             $this->format = $format;            
             //We've found our format through about, so let's set the header for content-location to the right one
@@ -62,7 +62,7 @@ class Formatter{
         }else if($this->formatExists($urlformat)){
             $this->format = $urlformat;
         }else{            
-            throw new \tdt\framework\TDTException(451,array($urlformat));
+            throw new TDTException(451,array($urlformat));
         }
         
     }

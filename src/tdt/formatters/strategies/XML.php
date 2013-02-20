@@ -35,7 +35,7 @@ class XML extends ..\AStrategy{
 
         
         if(!is_object($this->objectToPrint->$rootname)){
-            $wrapper = new stdClass();            
+            $wrapper = new \stdClass();            
             $wrapper->$rootname = $this->objectToPrint->$rootname;
             $this->objectToPrint->$rootname = $wrapper;
         }

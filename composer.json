@@ -9,7 +9,8 @@
         "tdt/core": "RESTful API to configure several inputs to format using these formatters"
     },
     "require": {
-	"tdt/framework":"dev-master"
+        "tdt/negotiators" : "dev-master",
+        "tdt/exceptions" : "dev-master"
     },
     "minimum-stability" : "dev",
     "autoload": {
