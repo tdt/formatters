@@ -8,7 +8,7 @@
  */
 
 namespace tdt\formatters\strategies;
-class XML extends tdt\formatters\AStrategy{
+class XML extends \tdt\formatters\AStrategy{
     //make a stack of array information, always work on the last one
     //for nested array support
     private $stack = array();

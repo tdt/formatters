@@ -9,7 +9,7 @@
 
 namespace tdt\formatters\strategies;
 
-class CSV extends tdt\formatters\AStrategy{
+class CSV extends \tdt\formatters\AStrategy{
 
      public function printHeader(){
 	  header("Access-Control-Allow-Origin: *");

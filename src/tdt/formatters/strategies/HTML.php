@@ -12,7 +12,7 @@
 
 namespace tdt\formatters\strategies;
 
-class HTML extends tdt\formatters\AStrategy {
+class HTML extends \tdt\formatters\AStrategy {
 
 	private $thead;
 	private $tbody;
