@@ -12,7 +12,7 @@
 
 namespace tdt\formatters\strategies;
 
-class RJSON extends ..\AStrategy {
+class RJSON extends tdt\formatters\AStrategy {
 
     public function __construct($rootname, $objectToPrint) {
         parent::__construct($rootname, $objectToPrint);

@@ -11,7 +11,7 @@
 
 namespace tdt\formatters\strategies;
 
-class HTMLTABLE extends  ..\AStrategy{
+class HTMLTABLE extends  tdt\formatters\AStrategy{
     
     private $SHOWNULLVALUES=true;/* show null values as "unknown" or not? If not, you can not see the difference between "null" and "" */
 

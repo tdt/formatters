@@ -10,7 +10,7 @@
 
 namespace tdt\formatters\strategies;
 
-class KML extends ..\AStrategy{
+class KML extends tdt\formatters\AStrategy{
 
     public function __construct($rootname,$objectToPrint){
         parent::__construct($rootname,$objectToPrint);

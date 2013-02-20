@@ -10,7 +10,7 @@
 
 namespace tdt\formatters\strategies;
 
-class JSONP extends ..\AStrategy{
+class JSONP extends tdt\formatters\AStrategy{
 
      private $callback;
 

@@ -9,7 +9,7 @@
 
 namespace tdt\formatters\strategies;
 
-class PHP extends ..\AStrategy{
+class PHP extends tdt\formatters\AStrategy{
      
      public function __construct($rootname,$objectToPrint){
 	  parent::__construct($rootname,$objectToPrint);

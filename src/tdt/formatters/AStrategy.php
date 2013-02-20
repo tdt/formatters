@@ -32,7 +32,7 @@ abstract class AStrategy {
     /**
      * This function prints the object. uses {@link printHeader()} and {@link printBody()}. 
      */
-    public function printAll() {
+    public function execute() {
 
         header("Access-Control-Allow-Origin: *");
         header("Access-Control-Allow-Methods: GET");

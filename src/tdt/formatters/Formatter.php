@@ -74,10 +74,10 @@ class Formatter{
     /*
      * This function has to create a strategy and print everything using this strategy.
      */
-    private function execute($thing){
-        //TODO
-        $format = $this->format;
-        $strategy = new strategies\$format("rootname",$thing);
+    private function execute($rootname, $thing){
+        $format = "strategies\\" . $this->format;
+        $strategy = new $format($rootname,$thing);
+        $strategy->execute();
     }
     
 

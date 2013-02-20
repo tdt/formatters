@@ -12,7 +12,7 @@
 
 namespace tdt\formatters\strategies;
 
-class NT extends ..\AStrategy {
+class NT extends tdt\formatters\AStrategy {
 
     public function __construct($rootname, $objectToPrint) {
         parent::__construct($rootname, $objectToPrint);

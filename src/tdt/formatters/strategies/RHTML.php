@@ -12,7 +12,7 @@
 
 namespace tdt\formatters\strategies;
 
-class RHTML extends ..\AStrategy {
+class RHTML extends tdt\formatters\AStrategy {
 
     public function __construct($rootname, $objectToPrint) {
         parent::__construct($rootname, $objectToPrint);
