@@ -14,7 +14,7 @@ class CSV extends \tdt\formatters\AStrategy{
 
      public function printHeader(){
 	  header("Access-Control-Allow-Origin: *");
-	  header("Content-Type: text/csv;charset=UTF-8");	  	  
+	  header("Content-Type: text/csv;charset=UTF-8");
      }
 
      /**
@@ -31,7 +31,7 @@ class CSV extends \tdt\formatters\AStrategy{
          $keys = array_keys(get_object_vars($this->objectToPrint));
          $key = $keys[0];
          $this->objectToPrint = $this->objectToPrint->$key;
-         
+
          if(!is_array($this->objectToPrint)){
              throw new TDTException(500,array("CSVFormatter - You can only request CSV on an array" , array("CSV", "json", "rdf", "xml", "n3","ttl")));
          }
@@ -58,7 +58,7 @@ class CSV extends \tdt\formatters\AStrategy{
                  if(is_object($row)){
                      $row = get_object_vars($row);
                  }
-                 
+
                  $i = 0;
                  foreach($row as $element){
                      if(is_object($element)){
@@ -82,16 +82,16 @@ class CSV extends \tdt\formatters\AStrategy{
                      else{
                          echo $this->enclose($element);
                      }
-                     echo sizeof($row)-1 != $i ? ";" : "\n";   
+                     echo sizeof($row)-1 != $i ? ";" : "\n";
                      $i++;
                  }
              }
-         }         
+         }
      }
 
 
      public static function getDocumentation(){
-         return "A CSV formatter. Works only on arrays";
+         return "A CSV formatter. Works only on tabular data.";
      }
 };
 ?>
