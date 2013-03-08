@@ -76,22 +76,23 @@ class Formatter{
      */
     public function execute($rootname, $thing){
         $format = "\\tdt\\formatters\\strategies\\" . $this->format;
-        $reflectionClass = new ReflectionClass($format);
+        $strategy = new $format($rootname,$thing);
         /**
          * Check if which formatter we're dealing with (normal object formatter or ARC grap formatter)
          * According to the result of this control check, convert (if necessary the object to the appropriate object structure e.g. from graph to php object or vice versa)
          */
+
         if(!$this->isObjectAGraph($thing)){
-            if($reflectionClass->implementsInterface(\tdt\formatters\interfaces\iSemanticFormatter)){
+            if(array_key_exists('tdt\\formatters\\interfaces\\iSemanticFormatter',class_implements($strategy))){
                 $thing = $this->convertPHPObjectToARC($thing);
             }
         }else if($this->isObjectAGraph){
-            if(!$reflectionClass->implementsInterface(\tdt\formatters\interfaces\iSemanticFormatter)){
+            if(!array_key_exists('tdt\\formatters\\interfaces\\iSemanticFormatter',class_implements($strategy))){
                 $thing = $this->convertARCToPHPObject($thing);
             }
         }
 
-
+        // remake the formatting strategy
         $strategy = new $format($rootname,$thing);
         $strategy->execute();
     }

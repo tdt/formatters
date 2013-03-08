@@ -11,8 +11,8 @@
  * @author Jan Vansteenlandt
  */
 
-namespace \tdt\formatters\interfaces;
+namespace tdt\formatters\interfaces;
 
-interface SemanticFormatter{
+interface iSemanticFormatter{
 
 }

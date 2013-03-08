@@ -12,6 +12,7 @@
 
 namespace tdt\formatters\strategies;
 
+
 class RDF extends \tdt\formatters\AStrategy implements \tdt\formatters\interfaces\iSemanticFormatter{
 
     public function __construct($rootname, $objectToPrint) {
