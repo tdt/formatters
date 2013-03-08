@@ -119,8 +119,46 @@ class Formatter{
      * @return A format object
      */
     public function getFormat(){
-	return $this->format;
-    }
+       return $this->format;
+   }
 
+   public function getFormatterDocumentation(){
+       $doc = array();
+        //open the custom directory and loop through it
+       if ($handle = opendir(__DIR__ . '/strategies')) {
+        while (false !== ($formatter = readdir($handle))) {
+
+            $filenameparts = explode(".", $formatter);
+            $formattername = $filenameparts[0];
+                //if the object read is a directory and the configuration methods file exists, then add it to the installed formatters
+            $classname = "tdt\\formatters\\strategies\\" . $formattername;
+
+            if ($formatter != "." && $formatter != ".." && class_exists($classname)) {
+
+                if (is_subclass_of($classname, "tdt\\formatters\\AStrategy")) {
+
+                        /*
+                         * Get the name without Formatter as $formattername
+                         */
+                        /*$matches = array();
+                        preg_match('/(.*)Formatter.*', $classname, $matches);
+                        if (isset($matches[1])) {
+                            $formattername = $matches[1];
+                        }*/
+
+                        /*
+                         * Remove the namespace if present from the formattername
+                         */
+                        $pieces = explode("\\", $formattername);
+                        $formattername = end($pieces);
+
+                        $doc[$formattername] = $classname::getDocumentation();
+                    }
+                }
+            }
+            closedir($handle);
+        }
+        return $doc;
+    }
 
 }
