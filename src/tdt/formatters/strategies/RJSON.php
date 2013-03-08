@@ -1,7 +1,7 @@
 <?php
 /**
  * This file contains the RDF/JSON formatter.
- * 
+ *
  * Includes RDF Api for PHP <http://www4.wiwiss.fu-berlin.de/bizer/rdfapi/>
  * Licensed under LGPL <http://www.gnu.org/licenses/lgpl.html>
  *
@@ -12,14 +12,14 @@
 
 namespace tdt\formatters\strategies;
 
-class RJSON extends \tdt\formatters\AStrategy {
+class RJSON extends \tdt\formatters\AStrategy implements \tdt\formatters\interfaces\iSemanticFormatter {
 
     public function __construct($rootname, $objectToPrint) {
         parent::__construct($rootname, $objectToPrint);
     }
 
     public function printBody() {
-        //Unwrap the object        
+        //Unwrap the object
         foreach ($this->objectToPrint as $class => $prop){
             if (is_a($prop,"MemModel")){
                 $this->objectToPrint = $prop;

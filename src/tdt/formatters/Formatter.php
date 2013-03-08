@@ -26,15 +26,15 @@ class Formatter{
         // * Check if $urlformat has been set
         //   - if not: probably something fishy happened, set format as error for logging purpose
         //   - else if is about: do content negotiation
-        //   - else check if format exists 
+        //   - else check if format exists
         //        × throw exception when it doesn't
         //        × if it does, set $this->format with ucfirst
 
         //first, let's be sure about the case of the format
         $urlformat = strtoupper($urlformat);
-       
+
         if(strtoupper($urlformat) == "ABOUT" || $urlformat == "" ){ //urlformat can be empty on SPECTQL query
-            
+
             $cn = new \tdt\negotiators\ContentNegotiator();
             $format = strtoupper($cn->pop());
             while(!$this->formatExists($format) && $cn->hasNext()){
@@ -43,10 +43,10 @@ class Formatter{
                     $format == "XML";
                 }
             }
-            if(!$this->formatExists($format)){                
+            if(!$this->formatExists($format)){
                 throw new TDTException(451,array($format)); // could not find a suitible format
             }
-            $this->format = $format;            
+            $this->format = $format;
             //We've found our format through about, so let's set the header for content-location to the right one
             //to do this we're building our current URL and changing .about in .format
             $format= strtoupper($this->format);
@@ -62,7 +62,7 @@ class Formatter{
             header("Content-Location:" . $contentlocation);
         }else if($this->formatExists($urlformat)){
             $this->format = $urlformat;
-        }else{            
+        }else{
             throw new TDTException(451,array($urlformat));
         }
     }
@@ -76,10 +76,42 @@ class Formatter{
      */
     public function execute($rootname, $thing){
         $format = "\\tdt\\formatters\\strategies\\" . $this->format;
+        $reflectionClass = new ReflectionClass($format);
+        /**
+         * Check if which formatter we're dealing with (normal object formatter or ARC grap formatter)
+         * According to the result of this control check, convert (if necessary the object to the appropriate object structure e.g. from graph to php object or vice versa)
+         */
+        if(!$this->isObjectAGraph($thing)){
+            if($reflectionClass->implementsInterface(\tdt\formatters\interfaces\iSemanticFormatter)){
+                $thing = $this->convertPHPObjectToARC($thing);
+            }
+        }else if($this->isObjectAGraph){
+            if(!$reflectionClass->implementsInterface(\tdt\formatters\interfaces\iSemanticFormatter)){
+                $thing = $this->convertARCToPHPObject($thing);
+            }
+        }
+
+
         $strategy = new $format($rootname,$thing);
         $strategy->execute();
     }
-    
+
+    /**
+     * TODO Miel: implement these functions
+     */
+
+    protected function isObjectAGraph($object){
+        return false;
+    }
+
+    protected function convertPHPObjectToARC($object){
+        return $object;
+    }
+
+    protected function convertARCToPHPObject($graph){
+        return $graph;
+    }
+
 
     /**
      * Returns the format that has been set by the request

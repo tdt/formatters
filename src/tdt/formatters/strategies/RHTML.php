@@ -1,7 +1,7 @@
 <?php
 /**
  * This file contains the RDF as HTML table formatter.
- * 
+ *
  * Includes RDF Api for PHP <http://www4.wiwiss.fu-berlin.de/bizer/rdfapi/>
  * Licensed under LGPL <http://www.gnu.org/licenses/lgpl.html>
  *
@@ -12,7 +12,7 @@
 
 namespace tdt\formatters\strategies;
 
-class RHTML extends \tdt\formatters\AStrategy {
+class RHTML extends \tdt\formatters\AStrategy implements \tdt\formatters\interfaces\iSemanticFormatter{
 
     public function __construct($rootname, $objectToPrint) {
         parent::__construct($rootname, $objectToPrint);
@@ -32,7 +32,7 @@ class RHTML extends \tdt\formatters\AStrategy {
             $outputter = new RDFOutput();
             $this->objectToPrint = $outputter->buildRdfOutput($this->objectToPrint);
         }
-        
+
         //We are certain that the objectToPrint is now a MemModel: write as HTML table
         echo $this->objectToPrint->writeAsHTMLTable();
     }

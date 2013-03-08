@@ -1,7 +1,7 @@
 <?php
 /**
  * This file contains the RDF/N3 formatter.
- * 
+ *
  * Includes RDF Api for PHP <http://www4.wiwiss.fu-berlin.de/bizer/rdfapi/>
  * Licensed under LGPL <http://www.gnu.org/licenses/lgpl.html>
  *
@@ -12,7 +12,7 @@
 
 namespace tdt\formatters\strategies;
 
-class N3 extends \tdt\formatters\AStrategy{
+class N3 extends \tdt\formatters\AStrategy implements \tdt\formatters\interfaces\iSemanticFormatter{
 
     public function __construct($rootname, $objectToPrint) {
         parent::__construct($rootname, $objectToPrint);
@@ -32,7 +32,7 @@ class N3 extends \tdt\formatters\AStrategy{
             $outputter = new RDFOutput();
             $this->objectToPrint = $outputter->buildRdfOutput($this->objectToPrint);
         }
-        
+
         // Import Package Syntax
         include_once(RDFAPI_INCLUDE_DIR . PACKAGE_SYNTAX_N3);
 
