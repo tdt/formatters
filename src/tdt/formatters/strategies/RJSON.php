@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file contains the RDF/JSON formatter.
  *
@@ -19,8 +20,12 @@ class RJSON extends \tdt\formatters\AStrategy implements \tdt\formatters\interfa
     }
 
     public function printBody() {
-        $triples = $this->objectToPrint->getTriples();
-        echo $this->objectToPrint->toRDFJSON($triples);
+        /* Serializer instantiation */
+        $ser = \ARC2::getRDFJSONSerializer();
+        foreach ($this->objectToPrint as $class => $prop)
+            $triples = $prop->getTriples();
+        /* Serialize a triples array */
+        echo $ser->getSerializedTriples($triples);
     }
 
     public function printHeader() {
@@ -28,7 +33,7 @@ class RJSON extends \tdt\formatters\AStrategy implements \tdt\formatters\interfa
         header("Content-Type: application/json;charset=UTF-8");
     }
 
-    public static function getDocumentation(){
+    public static function getDocumentation() {
         return "Prints in the Talis RDF JSON notation with semantic annotations";
     }
 

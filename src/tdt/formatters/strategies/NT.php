@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file contains the RDF/NTriple formatter.
  *
@@ -12,15 +13,19 @@
 
 namespace tdt\formatters\strategies;
 
-class NT extends \tdt\formatters\AStrategy implements \tdt\formatters\interfaces\iSemanticFormatter{
+class NT extends \tdt\formatters\AStrategy implements \tdt\formatters\interfaces\iSemanticFormatter {
 
     public function __construct($rootname, $objectToPrint) {
         parent::__construct($rootname, $objectToPrint);
     }
 
     public function printBody() {
-        $triples = $this->objectToPrint->getTriples();
-        echo $this->objectToPrint->toNTriples($triples);
+        /* Serializer instantiation */
+        $ser = \ARC2::getNTriplesSerializer();
+        foreach ($this->objectToPrint as $class => $prop)
+            $triples = $prop->getTriples();
+        /* Serialize a triples array */
+        echo $ser->getSerializedTriples($triples);
     }
 
     public function printHeader() {
@@ -28,7 +33,7 @@ class NT extends \tdt\formatters\AStrategy implements \tdt\formatters\interfaces
         header("Content-Type: application/n-triples; charset=UTF-8");
     }
 
-    public static function getDocumentation(){
+    public static function getDocumentation() {
         return "Prints the N-triples notation with semantic annotations";
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file contains the RDF/Turtle formatter.
  *
@@ -12,15 +13,19 @@
 
 namespace tdt\formatters\strategies;
 
-class TTL extends \tdt\formatters\AStrategy implements \tdt\formatters\interfaces\iSemanticFormatter{
+class TTL extends \tdt\formatters\AStrategy implements \tdt\formatters\interfaces\iSemanticFormatter {
 
     public function __construct($rootname, $objectToPrint) {
         parent::__construct($rootname, $objectToPrint);
     }
 
     public function printBody() {
-        $triples = $this->objectToPrint->getTriples();
-        echo $this->objectToPrint->toTurtle($triples);
+        /* Serializer instantiation */
+        $ser = \ARC2::getTurtleSerializer();
+        foreach ($this->objectToPrint as $class => $prop)
+            $triples = $prop->getTriples();
+        /* Serialize a triples array */
+        echo $ser->getSerializedTriples($triples);
     }
 
     public function printHeader() {
@@ -28,7 +33,7 @@ class TTL extends \tdt\formatters\AStrategy implements \tdt\formatters\interface
         header("Content-Type: text/turtle; charset=UTF-8");
     }
 
-    public static function getDocumentation(){
+    public static function getDocumentation() {
         return "Prints the Turtle notation with semantic annotations";
     }
 

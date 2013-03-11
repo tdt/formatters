@@ -20,8 +20,12 @@ class RDF extends \tdt\formatters\AStrategy implements \tdt\formatters\interface
     }
 
     public function printBody() {
-        $triples = $this->objectToPrint->getTriples();
-        echo $this->objectToPrint->toRDFXML($triples);
+        /* Serializer instantiation */
+        $ser = \ARC2::getRDFXMLSerializer();
+        foreach ($this->objectToPrint as $class => $prop)
+            $triples = $prop->getTriples();
+        /* Serialize a triples array */
+        echo $ser->getSerializedTriples($triples);
     }
 
     public function printHeader() {
