@@ -39,7 +39,21 @@ abstract class AStrategy {
         header("Expires: Sun, 19 Nov 1978 04:59:59 GMT");
 
         $this->printHeader();
-        $this->printBody();
+        
+        if (!$this->isObjectAGraph())
+            $this->printBody();
+        else
+            $this->printGraph();
+    }
+    
+    /*
+     * This function checks wether the object to print is an RDF graph or not
+     */
+    protected function isObjectAGraph() {
+        foreach ($this->objectToPrint as $prop)
+            return ($prop instanceof \ARC2_RDFParser);
+
+        return false;
     }
 
     /**
@@ -51,5 +65,12 @@ abstract class AStrategy {
      * This function will print the body of the responsemessage.
      */
     abstract public function printBody();
+    
+    /**
+     * This function will print the body of the responsemessage when the object is a graph.
+     */
+    public function printGraph(){
+        throw new \Exception("This resource does not contain semantic information");
+    }
     
 }

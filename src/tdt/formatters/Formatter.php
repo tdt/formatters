@@ -82,11 +82,13 @@ class Formatter {
     public function execute($rootname, $thing) {
         $format = "\\tdt\\formatters\\strategies\\" . $this->format;
         $strategy = new $format($rootname, $thing);
+        
+        //Didn't really make sense to split the formats up, so for the moment this is commented
         /**
          * Check if which formatter we're dealing with (normal object formatter or ARC grap formatter)
          * According to the result of this control check, convert (if necessary the object to the appropriate object structure e.g. from graph to php object or vice versa)
          */
-        if (!$this->isObjectAGraph($thing)) {
+        /*if (!$this->isObjectAGraph($thing)) {
             if (array_key_exists('tdt\\formatters\\interfaces\\iSemanticFormatter', class_implements($strategy))) {
                 $thing = $this->convertPHPObjectToARC($thing);
             }
@@ -94,95 +96,95 @@ class Formatter {
             if (!array_key_exists('tdt\\formatters\\interfaces\\iSemanticFormatter', class_implements($strategy))) {
                 $thing = $this->convertARCToPHPObject($thing);
             }
-        }
+        }*/
 
         // remake the formatting strategy
-        $strategy = new $format($rootname, $thing);
+        //$strategy = new $format($rootname, $thing);
         $strategy->execute();
     }
 
-    /**
-     * TODO Miel: implement these functions
-     */
-    protected function isObjectAGraph($object) {
-        foreach ($object as $class => $prop)
-            return ($prop instanceof \ARC2_RDFParser);
-
-        return false;
-    }
-
-    protected function convertPHPObjectToARC($object) {
-        //REWRITE
-//        //Unwrap the object
-//        foreach ($this->objectToPrint as $class => $prop){
-//            if (is_a($prop,"MemModel")){
-//                $this->objectToPrint = $prop;
-//                break;
-//            }
+    //This logic has moved to AStrategy and will probably stay there. For now, keep it commented.
+    
+//    protected function isObjectAGraph($object) {
+//        foreach ($object as $class => $prop)
+//            return ($prop instanceof \ARC2_RDFParser);
+//
+//        return false;
+//    }
+//
+//    protected function convertPHPObjectToARC($object) {
+//        //REWRITE
+////        //Unwrap the object
+////        foreach ($this->objectToPrint as $class => $prop){
+////            if (is_a($prop,"MemModel")){
+////                $this->objectToPrint = $prop;
+////                break;
+////            }
+////        }
+////        //When the objectToPrint has a MemModel, it is already an RDF model and is ready for serialisation.
+////        //Else it's retrieved data of which we need to build an rdf output
+////        if (!is_a($this->objectToPrint,"MemModel")) {
+////            $outputter = new RDFOutput();
+////            $this->objectToPrint = $outputter->buildRdfOutput($this->objectToPrint);
+////        }
+////
+////        // Import Package Syntax
+////        include_once(RDFAPI_INCLUDE_DIR . PACKAGE_SYNTAX_N3);
+////
+////        $ser = new N3Serializer();
+////
+////        $rdf = $ser->serialize($this->objectToPrint);
+//
+//        throw new \Exception("This resource does not contain semantic information");
+//
+//
+//        return $object;
+//    }
+//
+//    protected function convertARCToPHPObject($graph) {
+//        foreach ($graph as $class => &$prop) {
+//            //$graph->$class = $object;
+//            $index = $prop->getSimpleIndex();
+//
+//            //$result = $this->stripObject($index);
+//            $result = $index;
+//            $graph->$class = $result;
+//            return $graph;
 //        }
-//        //When the objectToPrint has a MemModel, it is already an RDF model and is ready for serialisation.
-//        //Else it's retrieved data of which we need to build an rdf output
-//        if (!is_a($this->objectToPrint,"MemModel")) {
-//            $outputter = new RDFOutput();
-//            $this->objectToPrint = $outputter->buildRdfOutput($this->objectToPrint);
+//        return $graph;
+//    }
+//
+//    private function stripObject($obj, $result = array()) {
+//
+//        foreach ($obj as $key => $value) {
+//            
+//            $new_key = $this->stripURI($key);
+//            $result[$new_key] = array();
+//            
+//            if (is_array($value))
+//                $result[$new_key] = $this->stripObject($value, $result[$new_key]);
+//            else
+//                $result[$new_key] = $this->stripURI($value);
 //        }
 //
-//        // Import Package Syntax
-//        include_once(RDFAPI_INCLUDE_DIR . PACKAGE_SYNTAX_N3);
+//        return $result;
+//    }
 //
-//        $ser = new N3Serializer();
+//    private function stripURI($uri) {
+//        $pos = strrpos($uri, "#");
 //
-//        $rdf = $ser->serialize($this->objectToPrint);
-
-        throw new \Exception("This resource does not contain semantic information");
-
-
-        return $object;
-    }
-
-    protected function convertARCToPHPObject($graph) {
-        foreach ($graph as $class => &$prop) {
-            //$graph->$class = $object;
-            $index = $prop->getSimpleIndex();
-
-            $result = $this->stripObject($index);
-            $graph->$class = $result;
-            return $graph;
-        }
-        return $graph;
-    }
-
-    private function stripObject($obj, $result = array()) {
-
-        foreach ($obj as $key => $value) {
-            
-            $new_key = $this->stripURI($key);
-            $result[$new_key] = array();
-            
-            if (is_array($value))
-                $result[$new_key] = $this->stripObject($value, $result[$new_key]);
-            else
-                $result[$new_key] = $this->stripURI($value);
-        }
-
-        return $result;
-    }
-
-    private function stripURI($uri) {
-        $pos = strrpos($uri, "#");
-
-        if (!$pos)
-            $pos = strrpos($uri, "/");
-
-
-        if (!$pos)
-            $pos = strrpos($uri, ":");
-        
-        if (!$pos)
-            return $uri;
-        
-        return substr($uri, $pos+1);
-    }
+//        if (!$pos)
+//            $pos = strrpos($uri, "/");
+//
+//
+//        if (!$pos)
+//            $pos = strrpos($uri, ":");
+//        
+//        if (!$pos)
+//            return $uri;
+//        
+//        return substr($uri, $pos+1);
+//    }
 
     /**
      * Returns the format that has been set by the request
