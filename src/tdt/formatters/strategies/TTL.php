@@ -19,13 +19,17 @@ class TTL extends \tdt\formatters\AStrategy implements \tdt\formatters\interface
         parent::__construct($rootname, $objectToPrint);
     }
 
-    public function printBody() {
+    public function printGraph() {
         /* Serializer instantiation */
         $ser = \ARC2::getTurtleSerializer();
         foreach ($this->objectToPrint as $class => $prop)
             $triples = $prop->getTriples();
         /* Serialize a triples array */
         echo $ser->getSerializedTriples($triples);
+    }
+    
+    public function printBody() {
+        throw new \Exception("This resource does not contain semantic information");
     }
 
     public function printHeader() {
@@ -36,5 +40,7 @@ class TTL extends \tdt\formatters\AStrategy implements \tdt\formatters\interface
     public static function getDocumentation() {
         return "Prints the Turtle notation with semantic annotations";
     }
+
+    
 
 }

@@ -19,13 +19,17 @@ class NT extends \tdt\formatters\AStrategy implements \tdt\formatters\interfaces
         parent::__construct($rootname, $objectToPrint);
     }
 
-    public function printBody() {
+    public function printGraph() {
         /* Serializer instantiation */
         $ser = \ARC2::getNTriplesSerializer();
         foreach ($this->objectToPrint as $class => $prop)
             $triples = $prop->getTriples();
         /* Serialize a triples array */
         echo $ser->getSerializedTriples($triples);
+    }
+    
+    public function printBody() {
+        throw new \Exception("This resource does not contain semantic information");
     }
 
     public function printHeader() {

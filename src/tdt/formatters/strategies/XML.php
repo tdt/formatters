@@ -186,5 +186,13 @@ class XML extends \tdt\formatters\AStrategy{
         return "Prints plain old XML. Watch out for tags starting with an integer: an i will be added.";
     }
 
+    public function printGraph() {
+        /* Serializer instantiation */
+        $ser = \ARC2::getRDFXMLSerializer();
+        foreach ($this->objectToPrint as $class => $prop)
+            $triples = $prop->getTriples();
+        /* Serialize a triples array */
+        echo $ser->getSerializedTriples($triples);
+    }
 
 }
