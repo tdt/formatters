@@ -70,7 +70,7 @@ abstract class AStrategy {
      * This function will print the body of the responsemessage when the object is a graph.
      */
     public function printGraph(){
-        throw new \Exception("This resource does not contain semantic information");
+        throw new \tdt\exceptions\TDTException(453);
     }
     
 }
