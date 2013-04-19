@@ -9,6 +9,7 @@
  * @author Jan Vansteenlandt <jan@iRail.be>
  */
 namespace tdt\formatters;
+use tdt\exceptions\TDTException;
 
 abstract class AStrategy {
     protected $rootname;
@@ -70,7 +71,7 @@ abstract class AStrategy {
      * This function will print the body of the responsemessage when the object is a graph.
      */
     public function printGraph(){
-        throw new \Exception("This resource does not contain semantic information");
+        throw new TDTException(453);
     }
     
 }
