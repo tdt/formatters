@@ -73,7 +73,7 @@ class BAR extends \tdt\formatters\AStrategy{
             });
 
             // Show the value indicators
-            svg.selectAll("text")
+            /*svg.selectAll("text")
                 .data(dataset)
                 .enter()
                 .append("text")
@@ -91,7 +91,7 @@ class BAR extends \tdt\formatters\AStrategy{
                 .attr("fill", "white")
                 .attr("font-weight","bold")
                 .attr("class","shadow")
-                .attr("text-anchor","middle");
+                .attr("text-anchor","middle");*/ // When lot's of data is shown (ergo small bars) value indicators are impossible to draw.
 
             // Show the title
             svg.append("text")
