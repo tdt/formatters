@@ -1,5 +1,14 @@
 <?php
 
+/**
+ *
+ * @package tdt/formatters/strategies
+ * @copyright (C) 2011 by iRail vzw/asbl
+ * @license AGPLv3
+ * @author Lieven Janssen <lieven.janssen@okfn.org>
+ * @author Jan Vansteenlandt <jan@irail.be>
+ */
+
 namespace tdt\formatters\strategies;
 
 class BAR extends \tdt\formatters\AStrategy{

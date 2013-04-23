@@ -1,6 +1,6 @@
 <?php
 /**
- * The Kml-formatter is a formatter which will search for location objects throughout the documenttree and return a file with placemarks 
+ * The Kml-formatter is a formatter which will search for location objects throughout the documenttree and return a file with placemarks
  *
  * @copyright (C) 2011, 2013 by OKFN Belgium vzw/asbl
  * @license AGPLv3
@@ -37,7 +37,7 @@ class KML extends \tdt\formatters\AStrategy{
 
         echo "</kml>";
     }
-     
+
 
     /**
      * The first parameter is the name of an object. The second is an !object!
@@ -97,71 +97,71 @@ class KML extends \tdt\formatters\AStrategy{
         }
         $result .= "</ExtendedData>";
         return $result;
-    }     
+    }
 
     private function printArray(&$val){
-//	var_dump($val);
-	foreach($val as $key => &$value) {
-            $long = "";
-            $lat = "";
-            $coords = array();
-            if(is_array($value)) {
-                $array = $value;
+
+       foreach($val as $key => &$value) {
+        $long = "";
+        $lat = "";
+        $coords = array();
+        if(is_array($value)) {
+            $array = $value;
+        }
+        if (is_object($value)) {
+            $array = get_object_vars($value);
+        }
+        if(isset($array)) {
+            $longkey = $this->array_key_exists_nc("long",$array);
+            if (!$longkey) {
+                $longkey = $this->array_key_exists_nc("longitude",$array);
             }
-            if (is_object($value)) {
-                $array = get_object_vars($value);	   
+            $latkey = $this->array_key_exists_nc("lat",$array);
+            if (!$latkey) {
+                $latkey = $this->array_key_exists_nc("latitude",$array);
             }
-            if(isset($array)) {   
-                $longkey = $this->array_key_exists_nc("long",$array);
-                if (!$longkey) {
-                    $longkey = $this->array_key_exists_nc("longitude",$array);			   
+            $coordskey = $this->array_key_exists_nc("coords",$array);
+            if (!$coordskey) {
+                $coordskey = $this->array_key_exists_nc("coordinates",$array);
+            }
+            if($longkey && $latkey) {
+                $long = $array[$longkey];
+                $lat = $array[$latkey];
+                unset($array[$longkey]);
+                unset($array[$latkey]);
+                $name = $this->xmlgetelement($array);
+                $extendeddata = $this->getExtendedDataElement($array);
+            } else if($coordskey) {
+                $coords = explode(";",$array[$coordskey]);
+                unset($array[$coordskey]);
+                $name = $this->xmlgetelement($array);
+                $extendeddata = $this->getExtendedDataElement($array);
+            }
+            else {
+                $this->printArray($array);
+            }
+            if(($lat != "" && $long != "") || count($coords) != 0){
+                echo "<Placemark><name>$key</name><Description>".$name."</Description>";
+                echo $extendeddata;
+                if($lat != "" && $long != "") {
+                    echo "<Point><coordinates>".$long.",".$lat."</coordinates></Point>";
                 }
-                $latkey = $this->array_key_exists_nc("lat",$array);
-                if (!$latkey) {
-                    $latkey = $this->array_key_exists_nc("latitude",$array);			   
-                }
-                $coordskey = $this->array_key_exists_nc("coords",$array);
-                if (!$coordskey) {
-                    $coordskey = $this->array_key_exists_nc("coordinates",$array);			   
-                }
-                if($longkey && $latkey) {
-                    $long = $array[$longkey];
-                    $lat = $array[$latkey];
-                    unset($array[$longkey]);
-                    unset($array[$latkey]);
-                    $name = $this->xmlgetelement($array);
-                    $extendeddata = $this->getExtendedDataElement($array);				   
-                } else if($coordskey) {
-                    $coords = explode("|",$array[$coordskey]);
-                    unset($array[$coordskey]);
-                    $name = $this->xmlgetelement($array);
-                    $extendeddata = $this->getExtendedDataElement($array);				   
-                }
-                else {
-                    $this->printArray($array);
-                }
-                if(($lat != "" && $long != "") || count($coords) != 0){
-                    echo "<Placemark><name>$key</name><Description>".$name."</Description>";
-                    echo $extendeddata;
-                    if($lat != "" && $long != "") {
-                        echo "<Point><coordinates>".$long.",".$lat."</coordinates></Point>";
-                    }
-                    if (count($coords)  > 0) {
-                        if (count($coords)  == 1) {
-                            echo "<Polygon><outerBoundaryIs><LinearRing><coordinates>".$coords[0]."</coordinates></LinearRing></outerBoundaryIs></Polygon>";
-                        } else {
-                            echo "<MultiGeometry>";
-                            foreach($coords as $coord) {
-                                echo "<Polygon><outerBoundaryIs><LinearRing><coordinates>".$coord."</coordinates></LinearRing></outerBoundaryIs></Polygon>";					                            
-                            }
-                            echo "</MultiGeometry>";
+                if (count($coords)  > 0) {
+                    if (count($coords)  == 1) {
+                        echo "<Polygon><outerBoundaryIs><LinearRing><coordinates>".$coords[0]."</coordinates></LinearRing></outerBoundaryIs></Polygon>";
+                    } else {
+                        echo "<MultiGeometry>";
+                        foreach($coords as $coord) {
+                            echo "<LineString><coordinates>".$coord."</coordinates></LineString>";
                         }
+                        echo "</MultiGeometry>";
                     }
-                    echo "</Placemark>";
                 }
+                echo "</Placemark>";
             }
         }
     }
+}
 
     /**
      * Case insensitive version of array_key_exists.
@@ -189,6 +189,6 @@ class KML extends \tdt\formatters\AStrategy{
 
     public static function getDocumentation(){
         return "Will try to find locations in the entire object and print them as KML points";
-    }     
+    }
 };
 ?>

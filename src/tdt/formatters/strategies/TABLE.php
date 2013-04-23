@@ -25,7 +25,7 @@ class TABLE extends \tdt\formatters\AStrategy {
         header("Content-Type: text/html; charset=UTF-8");
         echo "<html>\n".
              "  <head>\n".
-             "    <title>Table Formatter</title>\n".
+             "    <title>Table</title>\n".
              "    <style>\n".
              "      #the-table { ".
              "          border:1px solid #bbb;".
