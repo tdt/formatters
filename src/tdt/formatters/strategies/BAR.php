@@ -25,6 +25,14 @@ class BAR extends \tdt\formatters\AStrategy{
     <script type="text/javascript">
 
         var dataset = [<?php echo $this->getData(); ?>];
+
+        if(dataset.length == 0){
+            d3.select("body")
+                .append("p")
+                .text("No plottable data was found.");
+            return;
+        }
+
         var w = 1000;
         var h = 200;
         var fontsize = 12;
@@ -35,7 +43,7 @@ class BAR extends \tdt\formatters\AStrategy{
         // Enter the scale: min, max
         var yScale = d3.scale.linear()
                               .domain([0, d3.max(dataset, function(d){ return d;})])
-                              .range([fontsize, h-titleFontSize]) // 20 so that a minimum of 20 px is reserved for the textvalue
+                              .range([25, h-25]) // Save space to display the value field (title)
                               .clamp(true);
 
         var colorScale = d3.scale.log()
@@ -72,27 +80,6 @@ class BAR extends \tdt\formatters\AStrategy{
                 return d;
             });
 
-            // Show the value indicators
-            /*svg.selectAll("text")
-                .data(dataset)
-                .enter()
-                .append("text")
-                .text(function(d){
-                    return d;
-                })
-                .attr("x", function(d, i) {
-                    return i * (w / dataset.length) + (w / dataset.length - barPadding) / 2;
-                })
-                .attr("y", function(d) {
-                    return h - yScale(d) + 15;
-                })
-                .attr("font-family","sans-serif")
-                .attr("font-size",fontsize + "px")
-                .attr("fill", "white")
-                .attr("font-weight","bold")
-                .attr("class","shadow")
-                .attr("text-anchor","middle");*/ // When lot's of data is shown (ergo small bars) value indicators are impossible to draw.
-
             // Show the title
             svg.append("text")
                 .attr("class", "title")
@@ -126,16 +113,33 @@ class BAR extends \tdt\formatters\AStrategy{
         $property = $_GET["bar_value"];
         $rootname = $this->rootname;
         $data = $this->objectToPrint->$rootname;
-        $datastring = ""; // Necessary to give back to our javascript.
+        $datastring = ""; // Builds a string to return to the javascript.
 
-        if(!empty($data) && is_array($data[0]) && !empty($data[0][$property])){
-            foreach($data as $entry){
+         // Peek at the first item.
+        if(is_object($data)){
+            $first_item = $data;
+        }else{
+            $first_item = array_shift($data);
+            array_unshift($data, $first_item);
+        }
+
+        // This is when the consumer asks a bar chart on 1 object or piece of data
+        // For now we're returning that one piece of data, although it may not seem very significant to build
+        // a bar chart out of one property.
+        if(is_object($data)){
+            if(!empty($data->$property)){
+                return $data->$property;
+            }
+        }
+
+        if(!empty($data) && is_array($first_item) && !empty($first_item[$property])){
+            foreach($data as $key => $entry){
                 if(!empty($entry[$property]) && $entry[$property] != 'null'){
                     $datastring.= $entry[$property] . ",";
                 }
             }
-        }else if(!empty($data) && is_object($data[0]) && !empty($data[0]->$property)){
-            foreach($data as $entry){
+        }else if(!empty($data) && is_object($first_item) && !empty($first_item->$property)){
+            foreach($data as $key => $entry){
                 if(!empty($entry->$property) && $entry->$property != 'null'){
                     $datastring.= $entry->$property . ",";
                 }
@@ -159,9 +163,26 @@ class BAR extends \tdt\formatters\AStrategy{
         $rootname = $this->rootname;
         $data = $this->objectToPrint->$rootname;
 
-        if(empty($data) || (is_array($data[0]) && empty($data[0][$property])) || (is_object($data[0]) && empty($data[0]->$property))) {
-            echo "No data has been found for the field: " . $property . ".";
+        // Peek at the first item.
+        if(is_object($data) && empty($data->$property)){
+            echo "No data has been found for the field: " . $property;
             die();
+        }else if(!is_object($data)){
+            $first_item = array_shift($data);
+
+            if(empty($data) || (is_array($first_item) && empty($first_item[$property])) || (is_object($first_item) && empty($first_item->$property))) {
+                echo "No data has been found for the field: " . $property . ".";
+                die();
+            }
+
+            array_unshift($data,$first_item);
         }
+    }
+
+    /**
+     * Return some information about this formatter.
+     */
+    public static function getDocumentation(){
+        return "This formatter returns a bar chart based on the field passed with the 'bar_value' request parameter.";
     }
 }
