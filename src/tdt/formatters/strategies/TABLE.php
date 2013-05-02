@@ -1,19 +1,19 @@
 <?php
 /**
- * This file contains the HTML Table printer.
- * 
- * I wrote this file based upon the csv formatter
- * 
- * @copyright (C) 2011,2013 by OKFN vzw/asbl
+ * This file contains the HTML Table printer, based upon the CSV formatter.
+ *
+ * @package The-Datatank/formatters
+ * @copyright (C) 2011 by iRail vzw/asbl
  * @license AGPLv3
  * @author Jeroen Penninck
  */
 
+
 namespace tdt\formatters\strategies;
 
-class HTMLTABLE extends  \tdt\formatters\AStrategy{
-    
-    private $SHOWNULLVALUES=true;/* show null values as "unknown" or not? If not, you can not see the difference between "null" and "" */
+class TABLE extends \tdt\formatters\AStrategy {
+
+    private $SHOWNULLVALUES=true;
 
 
     public function __construct($rootname, $objectToPrint) {
@@ -25,7 +25,7 @@ class HTMLTABLE extends  \tdt\formatters\AStrategy{
         header("Content-Type: text/html; charset=UTF-8");
         echo "<html>\n".
              "  <head>\n".
-             "    <title>Table Formatter</title>\n".
+             "    <title>Table</title>\n".
              "    <style>\n".
              "      #the-table { ".
              "          border:1px solid #bbb;".
@@ -37,7 +37,7 @@ class HTMLTABLE extends  \tdt\formatters\AStrategy{
              "          padding:5px; ".
              "      }".
              "    </style>\n".
-             "  </head>\n";        
+             "  </head>\n";
     }
 
     /**
@@ -48,23 +48,29 @@ class HTMLTABLE extends  \tdt\formatters\AStrategy{
     }
 
     public function printBody() {
-        
+
         $keys = array_keys(get_object_vars($this->objectToPrint));
         $key = $keys[0];
         $this->objectToPrint = $this->objectToPrint->$key;
 
-        if (!is_array($this->objectToPrint)) {
-            throw new \tdt\framework\TDTException(500,array("HTMLFormatter - You can only request HTML-table on an array"));
+        if(is_object($this->objectToPrint)){
+            $this->objectToPrint = array($this->objectToPrint);
         }
-	$firstrow = reset($this->objectToPrint);
+
+        if (!is_array($this->objectToPrint)) {
+            echo "This visualization only works on tabular data.";
+            die();
+        }
+
+        $firstrow = reset($this->objectToPrint);
         if($firstrow===FALSE) {
-            // NO DATA
             echo "  <body>\n".
                  "    <p><strong>There is no data to display...</strong></p>\n".
                  "  </body>\n".
                  "</html>\n";
-            return;
+            die();
         }
+
         if (isset($firstrow)) {
             //print the header row
             $headerrow = array();
@@ -74,13 +80,13 @@ class HTMLTABLE extends  \tdt\formatters\AStrategy{
                 $headerrow = array_keys($firstrow);
             }
 
-            // we're going to escape all of our fields
+            // We're going to escape all of our fields.
             $enclosedHeaderrow = array();
 
             foreach ($headerrow as $element) {
                 array_push($enclosedHeaderrow, $this->escape($element));
             }
-            
+
             echo "  <body>\n".
                  "\n".
                  "    <table id='the-table'>\n".
@@ -130,9 +136,11 @@ class HTMLTABLE extends  \tdt\formatters\AStrategy{
         }
     }
 
+    /**
+     * Return some information about this formatter.
+     */
     public static function getDocumentation() {
-        return "A Html Table formater, works only on arrays...";
+        return "An HTML Table formatter, this formatter only applies to tabular data structures.";
     }
 
 }
-?>
