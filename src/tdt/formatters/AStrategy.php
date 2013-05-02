@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * This class is an abstract formatter class. It will take an object and format it to a certain format.
  * This format and the logic to format it will be implemented in a class that inherits from this class.
  *
@@ -29,24 +29,23 @@ abstract class AStrategy {
         $this->rootname = $rootname;
         $this->objectToPrint = &$objectToPrint;
     }
-     
+
     /**
-     * This function prints the object. uses {@link printHeader()} and {@link printBody()}. 
+     * This function prints the object. uses {@link printHeader()} and {@link printBody()}.
      */
     public function execute() {
-
         header("Access-Control-Allow-Origin: *");
         header("Access-Control-Allow-Methods: GET");
         header("Expires: Sun, 19 Nov 1978 04:59:59 GMT");
 
         $this->printHeader();
-        
+
         if (!$this->isObjectAGraph())
             $this->printBody();
         else
             $this->printGraph();
     }
-    
+
     /*
      * This function checks wether the object to print is an RDF graph or not
      */
@@ -66,12 +65,12 @@ abstract class AStrategy {
      * This function will print the body of the responsemessage.
      */
     abstract public function printBody();
-    
+
     /**
      * This function will print the body of the responsemessage when the object is a graph.
      */
     public function printGraph(){
         throw new TDTException(453);
     }
-    
+
 }

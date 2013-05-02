@@ -1,3 +1,5 @@
 *.lock
 *.phar
 vendor
+*.DS_Store
+includes/shapefiles
