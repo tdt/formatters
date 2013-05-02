@@ -57,7 +57,7 @@ class MAP extends \tdt\formatters\AStrategy {
                         maxZoom: 18
                     }).addTo(map);
 
-                    var track = new L.KML('<?= $kml ?>');
+                    var track = new L.KML('<?= preg_replace("/'/", "\\'", $kml) ?>');
                     var data = new L.FeatureGroup();
                     for(i in track._layers){
                         data.addLayer(track._layers[i]);
