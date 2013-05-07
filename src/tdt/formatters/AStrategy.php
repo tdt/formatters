@@ -70,6 +70,20 @@ abstract class AStrategy {
      * This function will print the body of the responsemessage when the object is a graph.
      */
     public function printGraph(){
+        echo "<h1>Formatter doesn't support RDF</h1>"
+        echo "<p>We don't have a triple output for this formatter yet. This is a best effort in HTML.</p>";
+        echo "<p>There are plenty of RDF formatters which do work however. Check .ttl or .json for instance.</p>";
+        $rn = $this->rootname;
+        echo "<table border=3>";
+        echo "<tr><td>subject</td><td>object</td><td>predicate</td></tr>";
+        foreach($this->objectToPrint->$rn->triples as $triple){
+            echo "<tr><td>". $triple["s"] ."</td>";
+            echo "<td>". $triple["p"] ."</td>";
+            echo "<td>". $triple["o"] ."</td>";
+
+            echo "</tr>";
+        }
+        echo "</table>";
         throw new TDTException(453);
     }
 
