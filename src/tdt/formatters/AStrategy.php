@@ -84,8 +84,8 @@ abstract class AStrategy {
 
             echo "</tr>";
         }
-        echo "</table>";
-        throw new TDTException(453);
+        echo "</table>";;
+        set_error_header(453, "RDF not supported");
     }
 
 }
