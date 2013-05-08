@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
  * This class is an abstract formatter class. It will take an object and format it to a certain format.
  * This format and the logic to format it will be implemented in a class that inherits from this class.
  *
@@ -29,24 +29,23 @@ abstract class AStrategy {
         $this->rootname = $rootname;
         $this->objectToPrint = &$objectToPrint;
     }
-     
+
     /**
-     * This function prints the object. uses {@link printHeader()} and {@link printBody()}. 
+     * This function prints the object. uses {@link printHeader()} and {@link printBody()}.
      */
     public function execute() {
-
         header("Access-Control-Allow-Origin: *");
         header("Access-Control-Allow-Methods: GET");
         header("Expires: Sun, 19 Nov 1978 04:59:59 GMT");
 
         $this->printHeader();
-        
+
         if (!$this->isObjectAGraph())
             $this->printBody();
         else
             $this->printGraph();
     }
-    
+
     /*
      * This function checks wether the object to print is an RDF graph or not
      */
@@ -66,12 +65,27 @@ abstract class AStrategy {
      * This function will print the body of the responsemessage.
      */
     abstract public function printBody();
-    
+
     /**
      * This function will print the body of the responsemessage when the object is a graph.
      */
     public function printGraph(){
-        throw new TDTException(453);
+        set_error_header(453, "RDF not supported");
+        echo "<h1>Formatter doesn't support RDF</h1>";
+        
+        echo "<p>We don't have a triple output for this formatter yet. This is a best effort in HTML.</p>";
+        echo "<p>There are plenty of RDF formatters which do work however. Check .ttl or .json for instance.</p>";
+        $rn = $this->rootname;
+        echo "<table border=3>";
+        echo "<tr><td>subject</td><td>object</td><td>predicate</td></tr>";
+        foreach($this->objectToPrint->$rn->triples as $triple){
+            echo "<tr><td>". $triple["s"] ."</td>";
+            echo "<td>". $triple["p"] ."</td>";
+            echo "<td>". $triple["o"] ."</td>";
+
+            echo "</tr>";
+        }
+        echo "</table>";
     }
-    
+
 }

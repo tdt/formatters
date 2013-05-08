@@ -42,6 +42,3 @@ class JSON extends \tdt\formatters\AStrategy {
     }
 
 }
-
-;
-?>
