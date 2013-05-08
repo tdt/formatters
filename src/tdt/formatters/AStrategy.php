@@ -70,6 +70,7 @@ abstract class AStrategy {
      * This function will print the body of the responsemessage when the object is a graph.
      */
     public function printGraph(){
+        set_error_header(453, "RDF not supported");
         echo "<h1>Formatter doesn't support RDF</h1>";
         
         echo "<p>We don't have a triple output for this formatter yet. This is a best effort in HTML.</p>";
@@ -84,8 +85,7 @@ abstract class AStrategy {
 
             echo "</tr>";
         }
-        echo "</table>";;
-        set_error_header(453, "RDF not supported");
+        echo "</table>";
     }
 
 }
