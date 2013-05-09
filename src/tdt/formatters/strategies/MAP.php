@@ -27,7 +27,11 @@ class MAP extends \tdt\formatters\AStrategy {
         // Parse a kml from the objectToPrint, and convert it to a geojson.
         ob_start();
         $formatter = new \tdt\formatters\strategies\KML($this->rootname, $this->objectToPrint);
-        $formatter->printBody();
+        if (!$formatter->isObjectAGraph())
+            $formatter->printBody();
+        else
+            $formatter->printGraph();
+
         $kml = ob_get_contents();
         ob_end_clean();
     ?>
@@ -57,7 +61,7 @@ class MAP extends \tdt\formatters\AStrategy {
                         maxZoom: 18
                     }).addTo(map);
 
-                    var track = new L.KML('<?= preg_replace("/'/", "\\'", $kml) ?>');
+                    var track = new L.KML('<?php echo preg_replace("/'/", "\\'", $kml) ?>');
                     var data = new L.FeatureGroup();
                     for(i in track._layers){
                         data.addLayer(track._layers[i]);
@@ -68,6 +72,11 @@ class MAP extends \tdt\formatters\AStrategy {
             </body>
         </html>
     <?php
+    }
+
+    
+    public function printGraph(){
+        $this->printBody();
     }
 
     /**

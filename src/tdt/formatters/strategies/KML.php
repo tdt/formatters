@@ -187,8 +187,47 @@ class KML extends \tdt\formatters\AStrategy{
         return false;
     }
 
+    public function printGraph(){
+        $nameuris = array(
+            "http://schema.org/name"
+        );
+        $longitudeuris = array(
+            "http://www.w3.org/2003/01/geo/wgs84_pos#lon"
+        );
+        $latitudeuris = array(
+            "http://www.w3.org/2003/01/geo/wgs84_pos#lat"
+        );
+
+        $rn = $this->rootname;
+        $new = new \stdClass();
+        foreach($this->objectToPrint->$rn->triples as $t){
+            if(in_array($t["p"],$nameuris)){
+                if(!isset($new->$t["s"])){
+                    $new->$t["s"] = array();
+                }
+                $s = &$new->$t["s"];
+                $s["name"] = $t["o"];
+            }
+            if(in_array($t["p"],$longitudeuris)){
+                if(!isset($new->$t["s"])){
+                    $new->$t["s"] = array();
+                }
+                $s = &$new->$t["s"];
+                $s["longitude"] = $t["o"];
+            }
+            if(in_array($t["p"],$latitudeuris)){
+                if(!isset($new->$t["s"])){
+                    $new->$t["s"] = array();
+                }
+                $s = &$new->$t["s"];
+                $s["latitude"] = $t["o"];
+            }
+        }
+        $this->objectToPrint->$rn = $new;
+        $this->printBody();
+    }
+
     public static function getDocumentation(){
         return "Will try to find locations in the entire object and print them as KML points";
     }
-};
-?>
+}
