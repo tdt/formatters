@@ -46,7 +46,7 @@ class MAP extends \tdt\formatters\AStrategy {
                         include(INC."js/leaflet.KML.js");
                     ?>
                 </script>
-                <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+                <link rel="stylesheet" href="//cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
                 <style>
                     body { margin:0; padding:0; }
                     #map { position:absolute; top:0; bottom:0; width:100%; }
@@ -74,7 +74,7 @@ class MAP extends \tdt\formatters\AStrategy {
     <?php
     }
 
-    
+
     public function printGraph(){
         $this->printBody();
     }
@@ -83,6 +83,6 @@ class MAP extends \tdt\formatters\AStrategy {
      * Return some information about what this formatter does.
      */
     public static function getDocumentation(){
-        return "The Osm formatter is a formatter that generates a map visualisation.";
+        return "The map visualization creates a map based on the geographic data available in the datasource.";
     }
 }
