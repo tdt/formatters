@@ -10,7 +10,7 @@
  */
 namespace tdt\formatters;
 use tdt\exceptions\TDTException;
-
+use tdt\pages\Generator;
 abstract class AStrategy {
     protected $rootname;
     protected $objectToPrint;
@@ -71,21 +71,24 @@ abstract class AStrategy {
      */
     public function printGraph(){
         set_error_header(453, "RDF not supported");
-        echo "<h1>Formatter doesn't support RDF</h1>";
+        $generator = new Generator($this->rootname . " - formatter cannot process RDF");
+        $body ="";
+        $body .= "<h1>Formatter doesn't support RDF</h1>";
         
-        echo "<p>We don't have a triple output for this formatter yet. This is a best effort in HTML.</p>";
-        echo "<p>There are plenty of RDF formatters which do work however. Check .ttl or .json for instance.</p>";
+        $body .= "<p>We don't have a triple output for this formatter yet. This is a best effort in HTML.</p>";
+        $body .= "<p>There are plenty of RDF formatters which do work however. Check .ttl or .json for instance.</p>";
         $rn = $this->rootname;
-        echo "<table border=3>";
-        echo "<tr><td>subject</td><td>object</td><td>predicate</td></tr>";
+        $body .= "<table border=3>";
+        $body .= "<tr><td>subject</td><td>object</td><td>predicate</td></tr>";
         foreach($this->objectToPrint->$rn->triples as $triple){
-            echo "<tr><td>". $triple["s"] ."</td>";
-            echo "<td>". $triple["p"] ."</td>";
-            echo "<td>". $triple["o"] ."</td>";
+            $body .= "<tr><td>". $triple["s"] ."</td>";
+            $body .= "<td>". $triple["p"] ."</td>";
+            $body .= "<td>". $triple["o"] ."</td>";
 
-            echo "</tr>";
+            $body .= "</tr>";
         }
-        echo "</table>";
+        $body .= "</table>";
+        $generator->generate($body);
     }
 
 }

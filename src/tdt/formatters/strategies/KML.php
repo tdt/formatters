@@ -101,67 +101,67 @@ class KML extends \tdt\formatters\AStrategy{
 
     private function printArray(&$val){
 
-       foreach($val as $key => &$value) {
-        $long = "";
-        $lat = "";
-        $coords = array();
-        if(is_array($value)) {
-            $array = $value;
-        }
-        if (is_object($value)) {
-            $array = get_object_vars($value);
-        }
-        if(isset($array)) {
-            $longkey = $this->array_key_exists_nc("long",$array);
-            if (!$longkey) {
-                $longkey = $this->array_key_exists_nc("longitude",$array);
+        foreach($val as $key => &$value) {
+            $long = "";
+            $lat = "";
+            $coords = array();
+            if(is_array($value)) {
+                $array = $value;
             }
-            $latkey = $this->array_key_exists_nc("lat",$array);
-            if (!$latkey) {
-                $latkey = $this->array_key_exists_nc("latitude",$array);
+            if (is_object($value)) {
+                $array = get_object_vars($value);
             }
-            $coordskey = $this->array_key_exists_nc("coords",$array);
-            if (!$coordskey) {
-                $coordskey = $this->array_key_exists_nc("coordinates",$array);
-            }
-            if($longkey && $latkey) {
-                $long = $array[$longkey];
-                $lat = $array[$latkey];
-                unset($array[$longkey]);
-                unset($array[$latkey]);
-                $name = $this->xmlgetelement($array);
-                $extendeddata = $this->getExtendedDataElement($array);
-            } else if($coordskey) {
-                $coords = explode(";",$array[$coordskey]);
-                unset($array[$coordskey]);
-                $name = $this->xmlgetelement($array);
-                $extendeddata = $this->getExtendedDataElement($array);
-            }
-            else {
-                $this->printArray($array);
-            }
-            if(($lat != "" && $long != "") || count($coords) != 0){
-                echo "<Placemark><name>$key</name><Description>".$name."</Description>";
-                echo $extendeddata;
-                if($lat != "" && $long != "") {
-                    echo "<Point><coordinates>".$long.",".$lat."</coordinates></Point>";
+            if(isset($array)) {
+                $longkey = $this->array_key_exists_nc("long",$array);
+                if (!$longkey) {
+                    $longkey = $this->array_key_exists_nc("longitude",$array);
                 }
-                if (count($coords)  > 0) {
-                    if (count($coords)  == 1) {
-                        echo "<Polygon><outerBoundaryIs><LinearRing><coordinates>".$coords[0]."</coordinates></LinearRing></outerBoundaryIs></Polygon>";
-                    } else {
-                        echo "<MultiGeometry>";
-                        foreach($coords as $coord) {
-                            echo "<LineString><coordinates>".$coord."</coordinates></LineString>";
-                        }
-                        echo "</MultiGeometry>";
+                $latkey = $this->array_key_exists_nc("lat",$array);
+                if (!$latkey) {
+                    $latkey = $this->array_key_exists_nc("latitude",$array);
+                }
+                $coordskey = $this->array_key_exists_nc("coords",$array);
+                if (!$coordskey) {
+                    $coordskey = $this->array_key_exists_nc("coordinates",$array);
+                }
+                if($longkey && $latkey) {
+                    $long = $array[$longkey];
+                    $lat = $array[$latkey];
+                    unset($array[$longkey]);
+                    unset($array[$latkey]);
+                    $name = $this->xmlgetelement($array);
+                    $extendeddata = $this->getExtendedDataElement($array);
+                } else if($coordskey) {
+                    $coords = explode(";",$array[$coordskey]);
+                    unset($array[$coordskey]);
+                    $name = $this->xmlgetelement($array);
+                    $extendeddata = $this->getExtendedDataElement($array);
+                }
+                else {
+                    $this->printArray($array);
+                }
+                if(($lat != "" && $long != "") || count($coords) != 0){
+                    echo "<Placemark><name>". htmlspecialchars($key) ."</name><Description>".$name."</Description>";
+                    echo $extendeddata;
+                    if($lat != "" && $long != "") {
+                        echo "<Point><coordinates>".$long.",".$lat."</coordinates></Point>";
                     }
+                    if (count($coords)  > 0) {
+                        if (count($coords)  == 1) {
+                            echo "<Polygon><outerBoundaryIs><LinearRing><coordinates>".$coords[0]."</coordinates></LinearRing></outerBoundaryIs></Polygon>";
+                        } else {
+                            echo "<MultiGeometry>";
+                            foreach($coords as $coord) {
+                                echo "<LineString><coordinates>".$coord."</coordinates></LineString>";
+                            }
+                            echo "</MultiGeometry>";
+                        }
+                    }
+                    echo "</Placemark>";
                 }
-                echo "</Placemark>";
             }
         }
     }
-}
 
     /**
      * Case insensitive version of array_key_exists.
