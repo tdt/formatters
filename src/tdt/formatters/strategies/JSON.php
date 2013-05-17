@@ -25,7 +25,7 @@ class JSON extends \tdt\formatters\AStrategy {
         if (is_object($this->objectToPrint)) {
             $hash = get_object_vars($this->objectToPrint);
         }
-        echo json_encode($hash,JSON_UNESCAPED_SLASHES);
+        echo str_replace("\/","/",json_encode($hash));
     }
 
     public function printGraph() {
