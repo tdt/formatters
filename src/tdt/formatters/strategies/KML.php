@@ -22,6 +22,8 @@ class KML extends \tdt\formatters\AStrategy{
     }
 
     public function printBody(){
+
+
         /*
          * print the KML header first
          */
@@ -38,10 +40,6 @@ class KML extends \tdt\formatters\AStrategy{
         echo "</kml>";
     }
 
-
-    /**
-     * The first parameter is the name of an object. The second is an !object!
-     */
     private function printPlacemarks($val){
         $hash = get_object_vars($val);
         $this->printArray($hash);
@@ -188,14 +186,21 @@ class KML extends \tdt\formatters\AStrategy{
     }
 
     public function printGraph(){
+
         $nameuris = array(
             "http://schema.org/name"
         );
+
         $longitudeuris = array(
             "http://www.w3.org/2003/01/geo/wgs84_pos#lon"
         );
+
         $latitudeuris = array(
             "http://www.w3.org/2003/01/geo/wgs84_pos#lat"
+        );
+
+        $geometryuris = array(
+            "http://www.w3.org/2003/01/geo/wgs84_pos#geometry"
         );
 
         $rn = $this->rootname;
@@ -221,6 +226,33 @@ class KML extends \tdt\formatters\AStrategy{
                 }
                 $s = &$new->$t["s"];
                 $s["latitude"] = $t["o"];
+            }
+
+            if(in_array($t["p"],$geometryuris)){
+                if(empty($new->$t["s"])){
+                    $new->$t["s"] = array();
+                }
+                $s = &$new->$t["s"];
+                // Geometry holds a sequence of coordinates, each couple of coordinates needs to be put as an entry into the resulting array.
+                // The string that holds the geometry is build: MULTISTRING (( ... ..., ... ...), ... ...))
+                // Look at the kml printBody formatter above.
+                $coords = "";
+                $coord_string = substr($t["o"],17,-1);
+                $line_strings = explode("),",$coord_string);
+                foreach($line_strings as $line_string){
+                    $couples = explode(",",$line_string);
+                    $coord_string = "";
+                    foreach($couples as $couple){
+                        $couple = trim($couple);
+                        $couple = rtrim($couple,')');
+                        $couple = ltrim($couple,'(');
+                        $couple = preg_replace('/\s+/', ',', $couple);
+                        $coord_string .= $couple . " ";
+                    }
+                    $coords .= $coord_string;
+                    $coords .= ";";
+                }
+                $s["coords"] = rtrim($coords,";");
             }
         }
         $this->objectToPrint->$rn = $new;
