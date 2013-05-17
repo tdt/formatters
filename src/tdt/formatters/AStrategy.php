@@ -89,8 +89,13 @@ abstract class AStrategy {
         }
         $body .= "</table>";
         $h = headers_list();
-        if(isset($h["Link"])){
-            $body .= "<p class='nextpage'><a href='". $h["Link"] ."'>Next page</a></p>";
+        $i = 0;
+        $matches = array();
+        while($i < sizeof($h) && !preg_match( "/Link: (.*);rel=.*/" , $h[$i], $matches)){
+            $i++;
+        }
+        if($i < sizeof($h)){
+            $body .= "<p class='nextpage'><a href='". $matches[1] ."'>Next page</a></p>";
         }
         $generator->generate($body);
     }

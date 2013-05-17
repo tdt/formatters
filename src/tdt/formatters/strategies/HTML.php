@@ -32,6 +32,16 @@ class HTML extends \tdt\formatters\AStrategy {
 
     public function printBody() {
         $generator = new Generator();
+        $output = ;
+        $h = headers_list();
+        $i = 0;
+        $matches = array();
+        while($i < sizeof($h) && !preg_match( "/Link: (.*);rel=.*/" , $h[$i], $matches)){
+            $i++;
+        }
+        if($i < sizeof($h)){
+            $output .= "<p class='nextpage'><a href='". $matches[1] ."'>Next page</a></p>";
+        }
         $generator->generate($this->displayTree($this->objectToPrint));
     }
     
@@ -73,10 +83,6 @@ class HTML extends \tdt\formatters\AStrategy {
             
                 $output .= "<li>" . $key . $this->formatValue($value) . "</li>" . $newline;
             }
-        }
-        $h = headers_list();
-        if(isset($h["Link"])){
-            $output .= "<p class='nextpage'><a href='". $h["Link"] ."'>Next page</a></p>";
         }
         return $output;
     }
