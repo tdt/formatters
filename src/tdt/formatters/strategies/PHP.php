@@ -10,27 +10,38 @@
 namespace tdt\formatters\strategies;
 
 class PHP extends \tdt\formatters\AStrategy{
-     
-     public function __construct($rootname,$objectToPrint){
-	  parent::__construct($rootname,$objectToPrint);
-     }
 
-     public function printHeader(){
-	  header("Access-Control-Allow-Origin: *");
-	  header("Content-Type: text/plain;charset=UTF-8"); 
-     }
+   public function __construct($rootname,$objectToPrint){
+        parent::__construct($rootname,$objectToPrint);
+    }
 
-     public function printBody(){
-	  if(is_object($this->objectToPrint)){
-	       $hash = get_object_vars($this->objectToPrint);
-	  }
-	  $hash['version'] = $this->version;
-	  $hash['timestamp'] = time();
-	  echo serialize($hash);
-     }
+    public function printHeader(){
+        header("Access-Control-Allow-Origin: *");
+        header("Content-Type: text/plain;charset=UTF-8");
+    }
 
-     public static function getDocumentation(){
-         return "Prints php object notation. This can come in handy for php serialization";
-     }
+    public function printBody(){
+        $this->serializeObject();
+    }
 
-};
+    public function printGraph(){
+        $this->serializeObject();
+    }
+
+    /**
+     * Echoes the object to print in a php serialization
+     */
+    private function serializeObject(){
+        if(is_object($this->objectToPrint)){
+            $hash = get_object_vars($this->objectToPrint);
+        }
+        $hash['version'] = $this->version;
+        $hash['timestamp'] = time();
+        echo serialize($hash);
+    }
+
+    public static function getDocumentation(){
+        return "Prints php object notation. This can come in handy for php serialization";
+    }
+
+}
