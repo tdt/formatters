@@ -50,6 +50,10 @@ abstract class AStrategy {
      * This function checks wether the object to print is an RDF graph or not
      */
     protected function isObjectAGraph() {
+
+        if($this->objectToPrint instanceof \ARC2_RDFXMLParser)
+            return true;
+
         foreach ($this->objectToPrint as $prop)
             return ($prop instanceof \ARC2_RDFParser);
 
@@ -74,7 +78,7 @@ abstract class AStrategy {
         $generator = new Generator($this->rootname . " - formatter cannot process RDF");
         $body ="";
         $body .= "<h1>Formatter doesn't support RDF</h1>";
-        
+
         $body .= "<p>We don't have a triple output for this formatter yet. This is a best effort in HTML.</p>";
         $body .= "<p>There are plenty of RDF formatters which do work however. Check .ttl or .json for instance.</p>";
         $rn = $this->rootname;
