@@ -79,7 +79,7 @@ abstract class AStrategy {
         $body .= "<p>There are plenty of RDF formatters which do work however. Check .ttl or .json for instance.</p>";
         $rn = $this->rootname;
         $body .= "<table border=3>";
-        $body .= "<tr><td>subject</td><td>object</td><td>predicate</td></tr>";
+        $body .= "<tr><td>subject</td><td>predicate</td><td>object</td></tr>";
         foreach($this->objectToPrint->$rn->triples as $triple){
             $body .= "<tr><td>". $triple["s"] ."</td>";
             $body .= "<td>". $triple["p"] ."</td>";
