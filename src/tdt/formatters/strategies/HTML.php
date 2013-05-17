@@ -32,7 +32,7 @@ class HTML extends \tdt\formatters\AStrategy {
 
     public function printBody() {
         $generator = new Generator();
-        $output = ;
+        $output = $this->displayTree($this->objectToPrint);
         $h = headers_list();
         $i = 0;
         $matches = array();
@@ -42,7 +42,7 @@ class HTML extends \tdt\formatters\AStrategy {
         if($i < sizeof($h)){
             $output .= "<p class='nextpage'><a href='". $matches[1] ."'>Next page</a></p>";
         }
-        $generator->generate($this->displayTree($this->objectToPrint));
+        $generator->generate($output);
     }
     
     public static function getDocumentation(){
