@@ -91,7 +91,7 @@ abstract class AStrategy {
         $h = headers_list();
         $i = 0;
         $matches = array();
-        while($i < sizeof($h) && !preg_match( "/Link: .*,?(.*);rel=next.*/" , $h[$i], $matches)){
+        while($i < sizeof($h) && !preg_match( "/Link: (.+);rel=next.*/" , $h[$i], $matches)){
             $i++;
         }
         if($i < sizeof($h)){
