@@ -88,6 +88,10 @@ abstract class AStrategy {
             $body .= "</tr>";
         }
         $body .= "</table>";
+        $h = headers_list();
+        if(isset($h["Link"])){
+            $body .= "<p class='nextpage'><a href='". $h["Link"] ."'>Next page</a></p>";
+        }
         $generator->generate($body);
     }
 

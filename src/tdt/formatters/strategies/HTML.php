@@ -74,6 +74,10 @@ class HTML extends \tdt\formatters\AStrategy {
                 $output .= "<li>" . $key . $this->formatValue($value) . "</li>" . $newline;
             }
         }
+        $h = headers_list();
+        if(isset($h["Link"])){
+            $output .= "<p class='nextpage'><a href='". $h["Link"] ."'>Next page</a></p>";
+        }
         return $output;
     }
 
