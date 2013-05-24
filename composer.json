@@ -10,7 +10,9 @@
     },
     "require": {
         "tdt/negotiators" : "dev-master",
-        "tdt/exceptions" : "dev-master"
+        "tdt/exceptions" : "dev-master",
+        "tdt/pages" : "dev-master",
+        "mustache/mustache" : "dev-master"
     },
     "minimum-stability" : "dev",
     "autoload": {
