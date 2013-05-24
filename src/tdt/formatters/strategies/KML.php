@@ -22,6 +22,8 @@ class KML extends \tdt\formatters\AStrategy{
     }
 
     public function printBody(){
+
+
         /*
          * print the KML header first
          */
@@ -38,10 +40,6 @@ class KML extends \tdt\formatters\AStrategy{
         echo "</kml>";
     }
 
-
-    /**
-     * The first parameter is the name of an object. The second is an !object!
-     */
     private function printPlacemarks($val){
         $hash = get_object_vars($val);
         $this->printArray($hash);
@@ -101,67 +99,67 @@ class KML extends \tdt\formatters\AStrategy{
 
     private function printArray(&$val){
 
-       foreach($val as $key => &$value) {
-        $long = "";
-        $lat = "";
-        $coords = array();
-        if(is_array($value)) {
-            $array = $value;
-        }
-        if (is_object($value)) {
-            $array = get_object_vars($value);
-        }
-        if(isset($array)) {
-            $longkey = $this->array_key_exists_nc("long",$array);
-            if (!$longkey) {
-                $longkey = $this->array_key_exists_nc("longitude",$array);
+        foreach($val as $key => &$value) {
+            $long = "";
+            $lat = "";
+            $coords = array();
+            if(is_array($value)) {
+                $array = $value;
             }
-            $latkey = $this->array_key_exists_nc("lat",$array);
-            if (!$latkey) {
-                $latkey = $this->array_key_exists_nc("latitude",$array);
+            if (is_object($value)) {
+                $array = get_object_vars($value);
             }
-            $coordskey = $this->array_key_exists_nc("coords",$array);
-            if (!$coordskey) {
-                $coordskey = $this->array_key_exists_nc("coordinates",$array);
-            }
-            if($longkey && $latkey) {
-                $long = $array[$longkey];
-                $lat = $array[$latkey];
-                unset($array[$longkey]);
-                unset($array[$latkey]);
-                $name = $this->xmlgetelement($array);
-                $extendeddata = $this->getExtendedDataElement($array);
-            } else if($coordskey) {
-                $coords = explode(";",$array[$coordskey]);
-                unset($array[$coordskey]);
-                $name = $this->xmlgetelement($array);
-                $extendeddata = $this->getExtendedDataElement($array);
-            }
-            else {
-                $this->printArray($array);
-            }
-            if(($lat != "" && $long != "") || count($coords) != 0){
-                echo "<Placemark><name>$key</name><Description>".$name."</Description>";
-                echo $extendeddata;
-                if($lat != "" && $long != "") {
-                    echo "<Point><coordinates>".$long.",".$lat."</coordinates></Point>";
+            if(isset($array)) {
+                $longkey = $this->array_key_exists_nc("long",$array);
+                if (!$longkey) {
+                    $longkey = $this->array_key_exists_nc("longitude",$array);
                 }
-                if (count($coords)  > 0) {
-                    if (count($coords)  == 1) {
-                        echo "<Polygon><outerBoundaryIs><LinearRing><coordinates>".$coords[0]."</coordinates></LinearRing></outerBoundaryIs></Polygon>";
-                    } else {
-                        echo "<MultiGeometry>";
-                        foreach($coords as $coord) {
-                            echo "<LineString><coordinates>".$coord."</coordinates></LineString>";
-                        }
-                        echo "</MultiGeometry>";
+                $latkey = $this->array_key_exists_nc("lat",$array);
+                if (!$latkey) {
+                    $latkey = $this->array_key_exists_nc("latitude",$array);
+                }
+                $coordskey = $this->array_key_exists_nc("coords",$array);
+                if (!$coordskey) {
+                    $coordskey = $this->array_key_exists_nc("coordinates",$array);
+                }
+                if($longkey && $latkey) {
+                    $long = $array[$longkey];
+                    $lat = $array[$latkey];
+                    unset($array[$longkey]);
+                    unset($array[$latkey]);
+                    $name = $this->xmlgetelement($array);
+                    $extendeddata = $this->getExtendedDataElement($array);
+                } else if($coordskey) {
+                    $coords = explode(";",$array[$coordskey]);
+                    unset($array[$coordskey]);
+                    $name = $this->xmlgetelement($array);
+                    $extendeddata = $this->getExtendedDataElement($array);
+                }
+                else {
+                    $this->printArray($array);
+                }
+                if(($lat != "" && $long != "") || count($coords) != 0){
+                    echo "<Placemark><name>". htmlspecialchars($key) ."</name><Description>".$name."</Description>";
+                    echo $extendeddata;
+                    if($lat != "" && $long != "") {
+                        echo "<Point><coordinates>".$long.",".$lat."</coordinates></Point>";
                     }
+                    if (count($coords)  > 0) {
+                        if (count($coords)  == 1) {
+                            echo "<Polygon><outerBoundaryIs><LinearRing><coordinates>".$coords[0]."</coordinates></LinearRing></outerBoundaryIs></Polygon>";
+                        } else {
+                            echo "<MultiGeometry>";
+                            foreach($coords as $coord) {
+                                echo "<LineString><coordinates>".$coord."</coordinates></LineString>";
+                            }
+                            echo "</MultiGeometry>";
+                        }
+                    }
+                    echo "</Placemark>";
                 }
-                echo "</Placemark>";
             }
         }
     }
-}
 
     /**
      * Case insensitive version of array_key_exists.
@@ -187,8 +185,81 @@ class KML extends \tdt\formatters\AStrategy{
         return false;
     }
 
+    public function printGraph(){
+
+        $nameuris = array(
+            "http://schema.org/name"
+        );
+
+        $longitudeuris = array(
+            "http://www.w3.org/2003/01/geo/wgs84_pos#lon"
+        );
+
+        $latitudeuris = array(
+            "http://www.w3.org/2003/01/geo/wgs84_pos#lat"
+        );
+
+        $geometryuris = array(
+            "http://www.w3.org/2003/01/geo/wgs84_pos#geometry"
+        );
+
+        $rn = $this->rootname;
+        $new = new \stdClass();
+        foreach($this->objectToPrint->$rn->triples as $t){
+            if(in_array($t["p"],$nameuris)){
+                if(!isset($new->$t["s"])){
+                    $new->$t["s"] = array();
+                }
+                $s = &$new->$t["s"];
+                $s["name"] = $t["o"];
+            }
+            if(in_array($t["p"],$longitudeuris)){
+                if(!isset($new->$t["s"])){
+                    $new->$t["s"] = array();
+                }
+                $s = &$new->$t["s"];
+                $s["longitude"] = $t["o"];
+            }
+            if(in_array($t["p"],$latitudeuris)){
+                if(!isset($new->$t["s"])){
+                    $new->$t["s"] = array();
+                }
+                $s = &$new->$t["s"];
+                $s["latitude"] = $t["o"];
+            }
+
+            if(in_array($t["p"],$geometryuris)){
+                if(empty($new->$t["s"])){
+                    $new->$t["s"] = array();
+                }
+                $s = &$new->$t["s"];
+                // Geometry holds a sequence of coordinates, each couple of coordinates needs to be put as an entry into the resulting array.
+                // The string that holds the geometry is build: MULTISTRING (( ... ..., ... ...), ... ...))
+                // Look at the kml printBody formatter above.
+                $coords = "";
+                $coord_string = substr($t["o"],17,-1);
+                $line_strings = explode("),",$coord_string);
+                foreach($line_strings as $line_string){
+                    $couples = explode(",",$line_string);
+                    $coord_string = "";
+                    foreach($couples as $couple){
+                        $couple = trim($couple);
+                        $couple = rtrim($couple,')');
+                        $couple = ltrim($couple,'(');
+                        $couple = preg_replace('/\s+/', ',', $couple);
+                        $coord_string .= $couple . " ";
+                    }
+                    $coords .= $coord_string;
+                    $coords .= ";";
+                }
+                $s["coords"] = rtrim($coords,";");
+            }
+        }
+        $this->objectToPrint->$rn = $new;
+        $this->printBody();
+    }
+
     public static function getDocumentation(){
         return "Will try to find locations in the entire object and print them as KML points";
     }
-};
-?>
+}
