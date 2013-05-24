@@ -36,7 +36,7 @@ class CSV extends \tdt\formatters\AStrategy{
             throw new TDTException(500,array("CSVFormatter - You can only request CSV on an array" , array("CSV", "json", "rdf", "xml", "n3","ttl")));
         }
         if(isset($this->objectToPrint[0])){
-             //print the header row
+            //print the header row
             $headerrow = array();
             if(is_object($this->objectToPrint[0])){
                 $headerrow = array_keys(get_object_vars($this->objectToPrint[0]));
@@ -52,11 +52,16 @@ class CSV extends \tdt\formatters\AStrategy{
             }
 
             echo implode(";",$enclosedHeaderrow);
-            echo "\n";
+            if(sizeof($enclosedHeaderrow) > 0){
+                echo "\n";
+            }
 
             foreach($this->objectToPrint as $row){
                if(is_object($row)){
                    $row = get_object_vars($row);
+               }else if(!is_array($row)){
+                   echo $row . "\n";
+                   continue;
                }
 
                $i = 0;
