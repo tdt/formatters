@@ -14,11 +14,11 @@ class CSV extends \tdt\formatters\AStrategy{
 
     public function printHeader(){
        header("Access-Control-Allow-Origin: *");
-       header("Content-Type: text/html;charset=UTF-8");
+       header("Content-Type: text/csv;charset=UTF-8");
     }
 
     /**
-     * encloses the $element in double quotes
+     * Encloses the $element in double quotes.
      */
     private function enclose($element){
         $element = rtrim($element, '"');
