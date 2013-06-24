@@ -8,6 +8,9 @@
  */
 
 namespace tdt\formatters\strategies;
+
+define("NUMBER_TAG_PREFIX","_");
+
 class XML extends \tdt\formatters\AStrategy{
     //make a stack of array information, always work on the last one
     //for nested array support
@@ -49,7 +52,7 @@ class XML extends \tdt\formatters\AStrategy{
             $this->objectToPrint->$rootname = $wrapper;
         }
 
-        $this->printObject($this->rootname . " version=\"1.0\" timestamp=\"" . time() . "\"",$this->objectToPrint->$rootname);
+        $this->printObject($this->rootname . " version=\"1.0\" timestamp=\"" . time() . "\"", $this->objectToPrint->$rootname);
         echo "</$this->rootname>";
     }
 
@@ -57,9 +60,8 @@ class XML extends \tdt\formatters\AStrategy{
 
         //check on first character
         if(preg_match("/^[0-9]+.*/", $name)){
-            $name = "i" . $name; // add an i
-        }
-        $name = utf8_encode($name);
+            $name = NUMBER_TAG_PREFIX . $name; // add an i
+        }        
         echo "<".$name;
         //If this is not an object, it must have been an empty result
         //thus, we'll be returning an empty tag
@@ -87,11 +89,9 @@ class XML extends \tdt\formatters\AStrategy{
                         echo ">" . htmlspecialchars($value, ENT_QUOTES);
                         $tag_close = TRUE;
                     }else{
-                        $key = htmlspecialchars(str_replace(" ","",$key));
-                        $key = utf8_encode($key);
+                        $key = htmlspecialchars(str_replace(" ","",$key));                        
 
-                        $value = htmlspecialchars($value, ENT_QUOTES);
-                        $value = utf8_encode($value);
+                        $value = htmlspecialchars($value, ENT_QUOTES);                        
 
                         if($this->isNotAnAttribute($key)){
                             if(!$tag_close){
@@ -99,7 +99,10 @@ class XML extends \tdt\formatters\AStrategy{
                                 $tag_close = TRUE;
                             }
 
-                            echo "<$key>" . $value . "</$key>";
+                            if(preg_match("/^[0-9]+.*/", $key)){
+                               $key = NUMBER_TAG_PREFIX . $key; // add an i
+                            }
+                            echo "<".$key.">" . $value . "</$key>";
                         }else{
                             // To be discussed: strip the _ or not to strip the _
                             //$key = substr($key, 1);
@@ -113,11 +116,9 @@ class XML extends \tdt\formatters\AStrategy{
                 echo ">";
             }
 
-
             if($name != $nameobject){
                 $boom = explode(" ",$name);
-                if(count($boom) == 1){
-                    $name = utf8_encode($name);
+                if(count($boom) == 1){                    
                     echo "</$name>";
                 }
             }
@@ -125,58 +126,44 @@ class XML extends \tdt\formatters\AStrategy{
         }
     }
 
-    private function isNotAnAttribute($key){
-        //echo strpos($key,"_");
+    private function isNotAnAttribute($key){        
         return $key[0] != "_";
     }
 
     private function printArray($name,$array){
-        //check on first character
+        //check on first character        
         if(preg_match("/^[0-9]+.*/", $name)){
-            $name = "i" . $name; // add an i
+            $name = NUMBER_TAG_PREFIX . $name;
         }
         $index = 0;
 
-        if(empty($array)){
-            $name = utf8_encode($name);
+        if(empty($array)){            
             echo "<$name></$name>";
         }
 
         foreach($array as $key => $value){
             $nametag = $name;
             if(is_object($value)){
-                $this->printObject($nametag,$value,$name);
-                $name = utf8_encode($name);
+                $this->printObject($nametag,$value,$name);            
                 echo "</$name>";
-            }else if(is_array($value) && !$this->isHash($value)){
-                $name = utf8_encode($name);
+            }else if(is_array($value) && !$this->isHash($value)){            
                 echo "<".$name. ">";
-                $this->printArray($nametag,$value);
-                $name = utf8_encode($name);
+                $this->printArray($nametag,$value);            
                 echo "</".$name.">";
-            }else if(is_array($value) && $this->isHash($value)){
-                $name = utf8_encode($name);
+            }else if(is_array($value) && $this->isHash($value)){                
                 echo "<".$name. ">";
-                $this->printArray($key,$value);
-                $name = utf8_encode($name);
+                $this->printArray($key,$value);            
                 echo "</".$name.">";
-            }else{// no array in arrays are allowed!!
-                $name = htmlspecialchars(str_replace(" ","",$name));
-                $name = utf8_encode($name);
+            }else{
+                $name = htmlspecialchars(str_replace(" ","",$name));                
+                $value = htmlspecialchars($value);                
+                $key = htmlspecialchars(str_replace(" ","",$key));                
 
-                $value = htmlspecialchars($value);
-                $value = utf8_encode($value);
-
-                $key = htmlspecialchars(str_replace(" ","",$key));
-                $key = utf8_encode($key);
-
-                if($this->isHash($array)){
-                    //if this is an associative array, don't print it by name of the parent
-                    //check on first character
+                if($this->isHash($array)){                    
                     if(preg_match("/^[0-9]+.*/", $key)){
-                        $key = "i" . $key; // add an i
+                        $key = NUMBER_TAG_PREFIX . $key; 
                     }
-                    echo "<".$key . ">" . $value . "</".$key.">";
+                    echo "<".$key . ">" . $value  . "</".$key.">";
                 }else{
                     echo "<".$name. ">".$value."</".$name.">";
                 }
@@ -186,7 +173,7 @@ class XML extends \tdt\formatters\AStrategy{
         }
     }
 
-    // check if we have an hash or a normal 'numberice array ( php doesn't know the difference btw, it just doesn't care. )
+    // Check if we have an hash or a normal 'numeric' array ( php doesn't know the difference btw, it just doesn't care. )
     private function isHash($arr){
         return array_keys($arr) !== range(0, count($arr) - 1);
     }
@@ -203,5 +190,4 @@ class XML extends \tdt\formatters\AStrategy{
         /* Serialize a triples array */
         echo $ser->getSerializedTriples($triples);
     }
-
 }

@@ -17,8 +17,8 @@ class CSV extends \tdt\formatters\AStrategy{
        header("Content-Type: text/csv;charset=UTF-8");
     }
 
-     /**
-     * encloses the $element in double quotes
+    /**
+     * Encloses the $element in double quotes.
      */
     private function enclose($element){
         $element = rtrim($element, '"');
@@ -28,72 +28,67 @@ class CSV extends \tdt\formatters\AStrategy{
     }
 
     public function printBody(){
+
         $keys = array_keys(get_object_vars($this->objectToPrint));
         $key = $keys[0];
         $this->objectToPrint = $this->objectToPrint->$key;
 
         if(!is_array($this->objectToPrint)){
-            throw new TDTException(500,array("CSVFormatter - You can only request CSV on an array" , array("CSV", "json", "rdf", "xml", "n3","ttl")));
+            $exception_config = array();
+            $exception_config["log_dir"] = Config::get("general", "logging", "path");
+            $exception_config["url"] = Config::get("general", "hostname") . Config::get("general", "subdir") . "error";
+            throw new TDTException(452, array("You can only request a CSV formatter on a tabular datastructure."), $exception_config);
         }
-        if(isset($this->objectToPrint[0])){
-            //print the header row
-            $headerrow = array();
-            if(is_object($this->objectToPrint[0])){
-                $headerrow = array_keys(get_object_vars($this->objectToPrint[0]));
-            }else{
-                $headerrow = array_keys($this->objectToPrint[0]);
+
+
+        $header_printed = false;
+        foreach($this->objectToPrint as $row){
+            if(is_object($row)){
+               $row = get_object_vars($row);
+            }else if(!is_array($row)){
+                echo $row . "\n";
+                continue;
             }
 
-             // we're going to enclose all of our fields in double quotes
-            $enclosedHeaderrow = array();
-
-            foreach($headerrow as $element){
-               array_push($enclosedHeaderrow,$this->enclose($element));
-            }
-
-            echo implode(";",$enclosedHeaderrow);
-            if(sizeof($enclosedHeaderrow) > 0){
-                echo "\n";
-            }
-
-            foreach($this->objectToPrint as $row){
-               if(is_object($row)){
-                   $row = get_object_vars($row);
-               }else if(!is_array($row)){
-                   echo $row . "\n";
-                   continue;
-               }
-
-               $i = 0;
-               foreach($row as $element){
-                    if(is_object($element)){
-                        if(isset($element->id)){
-                            echo $element->id;
-                        }else if(isset($element->name)){
-                            echo $element->name;
-                        }else{
-                            echo "OBJECT";
-                        }
-                    }
-                    elseif(is_array($element)){
-                        if(isset($element["id"])){
-                            echo $element["id"];
-                        }else if(isset($element["name"])){
-                            echo $element["name"];
-                        }else{
-                            echo "OBJECT";
-                        }
-                    }
-                    else{
-                        echo $this->enclose($element);
-                    }
+            if(!$header_printed){
+                $i = 0;
+                foreach($row as $key => $value){
+                    echo $this->enclose($key);
                     echo sizeof($row)-1 != $i ? ";" : "\n";
                     $i++;
                 }
+                $header_printed = true;
+            }
+
+            $i = 0;
+            foreach($row as $element){
+
+                if(is_object($element)){
+                    if(isset($element->id)){
+                        echo $element->id;
+                    }else if(isset($element->name)){
+                        echo $element->name;
+                    }else{
+                        echo "OBJECT";
+                    }
+                }
+                elseif(is_array($element)){
+                    if(isset($element["id"])){
+                        echo $element["id"];
+                    }else if(isset($element["name"])){
+                        echo $element["name"];
+                    }else{
+                        echo "OBJECT";
+                    }
+                }
+                else{
+                    echo $this->enclose($element);
+                }
+                echo sizeof($row)-1 != $i ? ";" : "\n";
+                $i++;
             }
         }
     }
-
 
     public static function getDocumentation(){
         return "A CSV formatter. Works only on tabular data.";
