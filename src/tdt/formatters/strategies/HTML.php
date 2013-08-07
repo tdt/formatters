@@ -7,7 +7,7 @@
  * @license AGPLv3
  * @author Jan Vansteenlandt <jan@iRail.be>
  * @author Pieter Colpaert   <pieter@iRail.be>
- * @author Miel Vander Sande 
+ * @author Miel Vander Sande
  */
 
 namespace tdt\formatters\strategies;
@@ -32,7 +32,9 @@ class HTML extends \tdt\formatters\AStrategy {
 
     public function printBody() {
         $generator = new Generator();
+
         $output = $this->displayTree($this->objectToPrint);
+
         $h = headers_list();
         $i = 0;
         $matches = array();
@@ -40,58 +42,80 @@ class HTML extends \tdt\formatters\AStrategy {
             $i++;
         }
         if($i < sizeof($h)){
-            $output .= "<p class='nextpage'><a href='". $matches[1] ."'>Next page</a></p>";
+            //$output .= "<p class='nextpage'><a href='". $matches[1] ."'>Next page</a></p>";
         }
-        $generator->generate($output);
+        $generator->generate($output, 'resource');
     }
-    
+
     public static function getDocumentation(){
-        return "The Html formatter is a formatter which prints nice output for users. It prints everything in the internal object and extra links towards meta-data and documentation.";
+        return "The HTML formatter is a formatter which prints nice output for users. It prints everything in the internal object and extra links towards meta-data and documentation.";
     }
 
     private function getUrl($type) {
         $ext = explode(".", $_SERVER['REQUEST_URI']);
-        return "http://" . $_SERVER['HTTP_HOST'] . str_replace('.' . $ext[1],'.' . $type,$_SERVER['REQUEST_URI']);	
+        return "http://" . $_SERVER['HTTP_HOST'] . str_replace('.' . $ext[1],'.' . $type,$_SERVER['REQUEST_URI']);
     }
 
     private function displayTree($var) {
-        $newline = "\n";
-        $output ="";
-        foreach($var as $key => $value) {
-            if (is_array($value) || is_object($value)) {
-                $value = $newline . "<ul>" . $this->displayTree($value) . "</ul><br>";
-            }
-
-            if (is_array($var)) {
-                if (!stripos($value, "<li")) {
-                    if(is_numeric($key)){
-                        $output .= "<li>" . $this->formatValue($value) . "</li>" . $newline;
-                    }else{
-                        $output .= "<li>" . $key. " : " . $this->formatValue($value) . "</li>" . $newline;
-                    }
-                
-                }
-                else {
-                    $output .= $key. $this->formatValue($value) . $newline;
-                }
-         
-            }
-            else { // is_object
-                if (!stripos($value, "<li")) {
-                    $value = "<ul><li>" . $this->formatValue($value) . "</li></ul>" . $newline;
-                } 
-            
-                $output .= "<li>" . $key . $this->formatValue($value) . "</li>" . $newline;
-            }
+        if (is_object($this->objectToPrint)) {
+            $hash = get_object_vars($this->objectToPrint);
         }
-        return $output;
+
+        $formattedJSON = $this->prettyPrint(json_encode($hash));
+
+        return str_replace("\/","/", $formattedJSON);
     }
 
-    // formats url-values to a href=
-    private function formatValue($value){
-        if(substr($value,0,4) == "http" || substr($value,0,5) == "https"){
-            $value = '<a href="'.$value.'">' . $value ."</a>";
+    private function prettyPrint($json){
+        $result = '';
+        $level = 0;
+        $prev_char = '';
+        $in_quotes = false;
+        $ends_line_level = NULL;
+        $json_length = strlen( $json );
+
+        for( $i = 0; $i < $json_length; $i++ ) {
+            $char = $json[$i];
+            $new_line_level = NULL;
+            $post = "";
+            if( $ends_line_level !== NULL ) {
+                $new_line_level = $ends_line_level;
+                $ends_line_level = NULL;
+            }
+            if( $char === '"' && $prev_char != '\\' ) {
+                $in_quotes = !$in_quotes;
+            } else if( ! $in_quotes ) {
+                switch( $char ) {
+                    case '}': case ']':
+                        $level--;
+                        $ends_line_level = NULL;
+                        $new_line_level = $level;
+                        break;
+
+                    case '{': case '[':
+                        $level++;
+                    case ',':
+                        $ends_line_level = $level;
+                        break;
+
+                    case ':':
+                        $post = " ";
+                        break;
+
+                    case " ": case "\t": case "\n": case "\r":
+                        $char = "";
+                        $ends_line_level = $new_line_level;
+                        $new_line_level = NULL;
+                        break;
+                }
+            }
+            if( $new_line_level !== NULL ) {
+                $result .= "\n".str_repeat( "    ", $new_line_level );
+            }
+            $result .= $char.$post;
+            $prev_char = $char;
         }
-        return $value;
+
+        return $result;
     }
 }
