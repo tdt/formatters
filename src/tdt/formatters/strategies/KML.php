@@ -23,7 +23,6 @@ class KML extends \tdt\formatters\AStrategy{
 
     public function printBody(){
 
-
         /*
          * print the KML header first
          */
@@ -47,52 +46,15 @@ class KML extends \tdt\formatters\AStrategy{
 
     private function xmlgetelement($value){
         $result = "<![CDATA[";
-        if(is_object($value)){
-            $array = get_object_vars($value);
-            foreach($array as $key => $val){
-                if(is_numeric($key)){
-                    $key = "int_" . $key;
-                }
-                $result .= "<" . $key . ">" . $val . "</" . $key . ">";
-            }
-        }else if(is_array($value)){
-            foreach($value as $key => $val){
-                if(is_numeric($key)){
-                    $key = "int_" . $key;
-                }
-                $result .= "<" . $key . ">" . $val . "</" . $key . ">";
-            }
-        }else{
-            $result .= $value;
-        }
+        // Need to discuss what happens with this, the data create by the DCATA element is not used in our current map formatter
+
         $result .= "]]>";
         return $result;
     }
 
     private function getExtendedDataElement($value){
         $result = "<ExtendedData>";
-        if(is_object($value)){
-            $array = get_object_vars($value);
-            foreach($array as $key => $val){
-                if(is_numeric($key)){
-                    $key = "int_" . $key;
-                }
-                $key = htmlspecialchars(str_replace(" ","",$key));
-                $val = htmlspecialchars($val);
-                $result .= '<Data name="' . $key . '"><value>' . $val . '</value></Data>';
-            }
-        }else if(is_array($value)){
-            foreach($value as $key => $val){
-                if(is_numeric($key)){
-                    $key = "int_" . $key;
-                }
-                $key = htmlspecialchars(str_replace(" ","",$key));
-                $val = htmlspecialchars($val);
-                $result .= '<Data name="' . $key . '"><value>' . $val . '</value></Data>';
-            }
-        }else{
-            $result .= htmlspecialchars($value);
-        }
+        // Need to discuss what happens with this, the data create by the DCATA element is not used in our current map formatter
         $result .= "</ExtendedData>";
         return $result;
     }
