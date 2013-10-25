@@ -38,15 +38,15 @@ class MAP extends \tdt\formatters\AStrategy {
         <!DOCTYPE html>
         <html>
             <head>
-                <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-                <script src="//cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+                <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+                <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
                 <script type="text/javascript">
                     <?php
                         // KML Leaflet plugin
                         include(INC."js/leaflet.KML.js");
                     ?>
                 </script>
-                <link rel="stylesheet" href="//cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+                <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
                 <style>
                     body { margin:0; padding:0; }
                     #map { position:absolute; top:0; bottom:0; width:100%; }
