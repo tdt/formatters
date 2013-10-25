@@ -19,8 +19,9 @@ class JSONP extends \tdt\formatters\strategies\JSON{
 
 		parent::__construct($rootname,$objectToPrint);
 		if(empty($_GET['callback'])){
-			echo "You must pass along a request parameter called callback in order to use the JSONP functionality.";
-			exit();
+            echo "Provide the callback parameter in the request URI.";
+			header('HTTP/1.0 400 Bad call', true, 400);
+            die;
 		}
 
 	}
