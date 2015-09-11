@@ -1,4 +1,4 @@
-# formatters
+# Formatters
 
 Formats PHP arrays, PHP objects and RDF triples in a lot of formats. We serve all.
 
@@ -8,7 +8,7 @@ Formats PHP arrays, PHP objects and RDF triples in a lot of formats. We serve al
 
 Is a formatter lacking? Does a formatter contain a mistake? Don't hesitate to fork and file pull requests!
 
-## install
+## Install
 
 Include the formatters in your project by creating a composer.json file with a requirement: "tdt/formatters"=>"dev-master". Then do:
 
@@ -17,6 +17,6 @@ $ curl -s http://getcomposer.org/installer | php
 $ php composer.phar install
 ```
 
-## usage
+## Usage
 
 Check the example directory
