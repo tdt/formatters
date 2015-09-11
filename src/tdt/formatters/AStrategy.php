@@ -9,9 +9,12 @@
  * @author Jan Vansteenlandt <jan@iRail.be>
  */
 namespace tdt\formatters;
+
 use tdt\exceptions\TDTException;
 use tdt\pages\Generator;
-abstract class AStrategy {
+
+abstract class AStrategy
+{
     protected $rootname;
     protected $objectToPrint;
     protected $format;
@@ -24,7 +27,8 @@ abstract class AStrategy {
      * @param string $rootname Name of the rootobject, if used in the print format (i.e. xml)
      * @param Mixed  $objectToPrint Object that needs printing.
      */
-    public function __construct($rootname, &$objectToPrint,$version = "1.0") {
+    public function __construct($rootname, &$objectToPrint, $version = "1.0")
+    {
         $this->version = $version;
         $this->rootname = $rootname;
         $this->objectToPrint = &$objectToPrint;
@@ -33,29 +37,34 @@ abstract class AStrategy {
     /**
      * This function prints the object. uses {@link printHeader()} and {@link printBody()}.
      */
-    public function execute() {
+    public function execute()
+    {
         header("Access-Control-Allow-Origin: *");
         header("Access-Control-Allow-Methods: GET");
         header("Expires: Sun, 19 Nov 1978 04:59:59 GMT");
 
         $this->printHeader();
 
-        if (!$this->isObjectAGraph())
+        if (!$this->isObjectAGraph()) {
             $this->printBody();
-        else
+        } else {
             $this->printGraph();
+        }
     }
 
     /*
      * This function checks wether the object to print is an RDF graph or not
      */
-    protected function isObjectAGraph() {
+    protected function isObjectAGraph()
+    {
 
-        if($this->objectToPrint instanceof \ARC2_RDFXMLParser)
+        if ($this->objectToPrint instanceof \ARC2_RDFXMLParser) {
             return true;
+        }
 
-        foreach ($this->objectToPrint as $prop)
+        foreach ($this->objectToPrint as $prop) {
             return ($prop instanceof \ARC2_RDFParser);
+        }
 
         return false;
     }
@@ -73,7 +82,8 @@ abstract class AStrategy {
     /**
      * This function will print the body of the responsemessage when the object is a graph.
      */
-    public function printGraph(){
+    public function printGraph()
+    {
         set_error_header(453, "RDF not supported");
         $generator = new Generator($this->rootname . " - formatter cannot process RDF");
         $body ="";
@@ -84,7 +94,7 @@ abstract class AStrategy {
         $rn = $this->rootname;
         $body .= "<table border=3>";
         $body .= "<tr><td>subject</td><td>predicate</td><td>object</td></tr>";
-        foreach($this->objectToPrint->$rn->triples as $triple){
+        foreach ($this->objectToPrint->$rn->triples as $triple) {
             $body .= "<tr><td>". $triple["s"] ."</td>";
             $body .= "<td>". $triple["p"] ."</td>";
             $body .= "<td>". $triple["o"] ."</td>";
@@ -95,10 +105,11 @@ abstract class AStrategy {
         $h = headers_list();
         $i = 0;
         $matches = array();
-        while($i < sizeof($h) && !preg_match( "/Link: (.+);rel=next.*/" , $h[$i], $matches)){
+        while ($i < sizeof($h) && !preg_match( "/Link: (.+);rel=next.*/", $h[$i], $matches)){
             $i++;
         }
-        if($i < sizeof($h)){
+
+        if ($i < sizeof($h)) {
             $body .= "<p class='nextpage'><a href='". $matches[1] ."'>Next page</a></p>";
         }
         $generator->generate($body);
