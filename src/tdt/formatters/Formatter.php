@@ -13,7 +13,8 @@ namespace tdt\formatters;
 
 use tdt\exceptions\TDTException;
 
-class Formatter {
+class Formatter
+{
 
     private $format;
 
@@ -23,9 +24,12 @@ class Formatter {
 
     /**
      * sets the requested format in the factory from the request URL
+     *
      * @param string $urlformat The format of the request i.e. json,xml,....
+     * @throws TDTException
      */
-    public function setFormat($urlformat) {
+    public function setFormat($urlformat)
+    {
         //We define the format like this:
         // * Check if $urlformat has been set
         //   - if not: probably something fishy happened, set format as error for logging purpose
@@ -64,14 +68,15 @@ class Formatter {
             }
             $contentlocation = str_ireplace(".about", "." . $format, $pageURL);
             header("Content-Location:" . $contentlocation);
-        } else if ($this->formatExists($urlformat)) {
+        } elseif ($this->formatExists($urlformat)) {
             $this->format = $urlformat;
         } else {
             throw new TDTException(451, array($urlformat));
         }
     }
 
-    private function formatExists($format) {
+    private function formatExists($format)
+    {
         return class_exists("\\tdt\\formatters\\strategies\\$format");
     }
 
@@ -79,7 +84,8 @@ class Formatter {
      * This function has to create a strategy and print everything using this strategy.
      */
 
-    public function execute($rootname, $thing) {
+    public function execute($rootname, $thing)
+    {
         $format = "\\tdt\\formatters\\strategies\\" . $this->format;
         $strategy = new $format($rootname, $thing);
 
@@ -93,11 +99,13 @@ class Formatter {
      * Returns the format that has been set by the request
      * @return A format object
      */
-    public function getFormat() {
+    public function getFormat()
+    {
         return $this->format;
     }
 
-    public function getFormatterDocumentation() {
+    public function getFormatterDocumentation()
+    {
         $doc = array();
         //open the custom directory and loop through it
         if ($handle = opendir(__DIR__ . '/strategies')) {
